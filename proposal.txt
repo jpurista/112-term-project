@@ -1,0 +1,26 @@
+Juan Pablo Urista (jurista)
+
+Project Description:
+    - My term project is called "Furious Fowl"
+    - It takes much inspiration from the game "Angry Birds". The game is played by launching different types of birds at different structures. Each type of bird has a different effect or does a different amount of damage to the structure. The goal of each level is to destroy the villain (frogs) which are protected in the structures.
+
+Competitive Analysis:
+    - This project ("Furious Fowl") is most similar to the game "Angry BIrds". As Angry Birds is the inspiration for Furious Fowl, most of the game objectives and images will be based on and very similar to Angry Birds.
+    - 
+
+Structural Analysis:
+
+
+Structural Plan:
+
+
+Algorithmic Plan:
+
+
+Timeline Plan:
+
+
+Version Control Plan:
+
+
+Module List:
