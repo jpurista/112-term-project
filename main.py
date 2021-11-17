@@ -15,12 +15,22 @@ def appStarted(app):
         app.showScore = False
         app.instruct = False
 	
-	# These variable used in game.py
-        app.totalScore, app.levelScore, app.level = 0, 0, 0
-        app.birdsInLevel = game.birdGeneration(app.level)
-        app.obstaclesList = game.obstacleGeneration(app.level)
-        app.birdInMotionX = 0
-        app.birdInMotionY = 0
+        # do not reload
+        app.splashReload = False
+        app.gameReload = False
+        app.scoreReload = False
+
+        # #other stuff for game.py
+        # app.birdTypes = {'normal': 1, 'bomb': 2, 'split': 1.5, 'speed': 2, 'big': 3}
+        # app.structureTypes = {'sm-sq': 2, 'md-sq': 3, 'lg-sq': 4, 'sm-rect': 2, 'md-rect': 3, 'sm-tri': 2, 'md-tri': 3}
+        # app.structureMaterials = {'wood': 1, 'stone': 2, 'glass': 1.5}
+
+        # # These variable used in game.py
+        # app.totalScore, app.levelScore, app.level = 0, 0, 0
+        # app.birdsInLevel = game.birdGeneration(app.level, app.birdTypes)
+        # app.obstaclesList = game.obstacleGeneration(app.level, app.structureTypes, app.structureMaterials)
+        # app.birdInMotionX = 0
+        # app.birdInMotionY = 0
 
 def keyPressed(app, event):
         if (app.splashScreen) and not app.instruct:
