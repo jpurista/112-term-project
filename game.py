@@ -1,8 +1,10 @@
 import random, math
+import other
 from cmu_112_graphics import *
 
 def start(app, canvas, w, h):
-        canvas.create_text(w // 2, h // 4, text='This is the game', font='PressStart2P 24', fill='black', tags='score')
+        canvas.create_text(w // 2, h // 4, text='This is the game', font='PressStart2P 24', fill='black')
+        canvas.create_rectangle(w // 5, 2 * h // 3, (w // 5) + 20, (2 * h // 3) - 60, fill='brown', outline='brown')
 
 def timerFired(app):
         #* physics of launching bird is similar to a spring launching an object 
