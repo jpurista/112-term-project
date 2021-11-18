@@ -1,0 +1,4 @@
+changes made for TP1 in terms of visuals
+        - removed rounded edges from squares in other.py > round_rectangle()
+        - reuse the font: PressStart2P by reactivating on MacBook (font book)
+        - truncating the usernames in scores.py > shortenText()

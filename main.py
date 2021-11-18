@@ -59,7 +59,7 @@ def redrawAll(app, canvas):
                 if app.instruct == True:
                         intro.instruct(app, canvas)
         if not app.splashScreen:
-                other.round_rectangle(canvas, 17, 23, 107, 63,  fill='light slate gray', outline='light slate gray')
+                #other.round_rectangle(canvas, 17, 23, 107, 63,  fill='light slate gray', outline='light slate gray')
                 other.round_rectangle(canvas, 20, 20, 110, 60,  fill='#E5E9EE', outline='#E5E9EE')
                 canvas.create_text(65, 40, text='∆(h)', font='PressStart2P 15', fill='#424242')
                 if app.startGame:
