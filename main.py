@@ -1,5 +1,5 @@
 import math, random
-import intro, game, scores, other
+import other, intro, game, scores
 from cmu_112_graphics import *
 
 # * if app.released is True, then set birdForce, angleFired, app.birdXReleased, app.birdYReleased, 
@@ -112,6 +112,7 @@ def redrawAll(app, canvas):
         if app.splashScreen:
                 intro.splashScreen(app, canvas, app.activeSplash)
                 if app.instruct == True:
+                        other.round_rectangle(canvas, w // 6, h // 6, 5 * w // 6, 5 * h // 6, fill='#E5E9EE', outline='#E5E9EE')
                         intro.instruct(app, canvas)
         if not app.splashScreen:
                 other.round_rectangle(canvas, 17, 23, 107, 63,  fill='light slate gray', outline='light slate gray')
@@ -127,4 +128,4 @@ def redrawAll(app, canvas):
 def startUp():
 	runApp(width=700, height=500)
 
-startUp() 
+startUp()

@@ -23,7 +23,7 @@ def instruct(app, canvas):
         w = app.width
         h = app.height 
 
-        other.round_rectangle(canvas, w // 6, h // 6, 5 * w // 6, 5 * h // 6, fill='#E5E9EE', outline='#E5E9EE')
-        canvas.create_text(w // 2, (h // 6) + 25, text='help', font='PressStart2P 15', fill='black')
-        canvas.create_text(w//2, (h // 6) + 80, text='Press the \'play\' button \n or (p) to play the game. \n', font='PressStart2P 15', fill='#424242')
-        canvas.create_text(w//2, (h // 6) + 130, text='Press the \'scores\' button\nor (s) to play the game.\n', font='PressStart2P 15', fill='#424242')
+        canvas.create_text(w // 2, h // 6 + 25, text='help', font='PressStart2P 15', fill='black')
+        canvas.create_text(w // 6 + 25, h // 6 + 25, text='X', font='PressStart2P 15', fill='black')
+        canvas.create_text(w // 2, h // 6 + 100, text='Press the \'play\' button \n or (p) to play the game. \n', font='PressStart2P 15', fill='#424242')
+        canvas.create_text(w // 2, h // 6 + 150, text='Press the \'scores\' button\nor (s) to play the game.\n', font='PressStart2P 15', fill='#424242')

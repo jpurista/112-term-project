@@ -4,15 +4,21 @@ from cmu_112_graphics import *
 
 def start(app, canvas, w, h):
         canvas.create_text(w // 2, h // 4, text='This is the game', font='PressStart2P 24', fill='black')
-        other.round_rectangle(canvas, w // 5, 2 * h // 3, (w // 5) + 15, (2 * h // 3) - 60, fill='brown')
+        drawLauncher(app, canvas)
 
-def obstaclePieces(app, canvas):
-        # TODO draw obstacle pieces
-        pass
+# def obstaclePieces(app, canvas, level, material):
+#         # TODO draw obstacle pieces
+#         pieces = obstacleGeneration(level, app.structureType, app.structureMaterials)
+#         for piece in pieces:
+#                 app.curPiece = piece
+#                 app.curPieceX = 'get the x position of the obstacle piece'
+#                 app.curPieceY = 'get the y position of the obstacle piece'
 
 def drawLauncher(app, canvas):
         # TODO this doesnt draw the base of the launcher, but rather the slingshot part
-        pass
+        w = app.width
+        h = app.height
+        other.round_rectangle(canvas, w // 5, 2 * h // 3, (w // 5) + 15, (2 * h // 3) - 60, fill='brown')
 
 def drawBird(app,canvas):
         # TODO this only draws the lineup of birds that's beside the launcher
@@ -34,7 +40,7 @@ def birdGeneration(level, birdTypes):
 
         return result
 
-def obstacleGeneration(level, type, material):
+def obstacleGeneration(level, structureType, material):
         # each possible size and shape along with different materials
         allowedScore = level * 3 
         result = []
@@ -47,7 +53,12 @@ def obstacleGeneration(level, type, material):
         # TODO this part is similar to the second section of birdGeneration 
         while allowedScore > 1:
                 structType = random.choice(list(type))
-                structValue = type[structType]
+                structValue = structureType[structType]
                 if (allowedScore - structValue) >= 0:
                         result.append(structType)
                         allowedScore -= structValue
+        
+        return result
+
+def obstacleCollapse(app, level):
+        pass
