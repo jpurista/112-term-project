@@ -1,2 +1,0 @@
-changes made for TP1 in terms of visuals
-        - reuse the font: PressStart2P by reactivating on MacBook (font book)
