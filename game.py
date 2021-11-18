@@ -3,6 +3,7 @@ import other
 from cmu_112_graphics import *
 
 def start(app, canvas, w, h):
+        print('game')
         canvas.create_text(w // 2, h // 4, text='This is the game', font='PressStart2P 24', fill='black')
         canvas.create_rectangle(w // 5, 2 * h // 3, (w // 5) + 20, (2 * h // 3) - 60, fill='brown', outline='brown')
 
@@ -51,6 +52,3 @@ def obstacleGeneration(level, type, material):
                 if (allowedScore - structValue) >= 0:
                         result.append(structType)
                         allowedScore -= structValue
-
-def backHome(app, canvas):
-        pass
