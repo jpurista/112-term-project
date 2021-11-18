@@ -20,6 +20,8 @@ def appStarted(app):
         app.gameReload = False
         app.scoreReload = False
 
+        app.angleFired = 0
+
         # #other stuff for game.py
         # app.birdTypes = {'normal': 1, 'bomb': 2, 'split': 1.5, 'speed': 2, 'big': 3}
         # app.structureTypes = {'sm-sq': 2, 'md-sq': 3, 'lg-sq': 4, 'sm-rect': 2, 'md-rect': 3, 'sm-tri': 2, 'md-tri': 3}
@@ -29,8 +31,8 @@ def appStarted(app):
         # app.totalScore, app.levelScore, app.level = 0, 0, 0
         # app.birdsInLevel = game.birdGeneration(app.level, app.birdTypes)
         # app.obstaclesList = game.obstacleGeneration(app.level, app.structureTypes, app.structureMaterials)
-        # app.birdInMotionX = 0
-        # app.birdInMotionY = 0
+        app.birdInMotionX = 0
+        app.birdInMotionY = 0
 
 def keyPressed(app, event):
         if (app.splashScreen) and not app.instruct:
@@ -76,6 +78,19 @@ def mousePressed(app, event):
                         app.startGame = False
                         app.showScore = False
 
+def calculateAngle(x,y):
+        return math.degrees(math.atan2(0-y, 0-x))
+
+def timerFired(app):
+        # TODO
+        #* physics of launching bird is similar to a spring launching an object 
+        #* equates to 0.5 * spring constant * (distance pushed back ** 2)
+        if app.startGame:
+                app.birdInMotionY = (5 + (app.birdInMotionX * math.tan(app.angleFired)) - 9.8 * (app.birdInMotionX**2) )/ (2 * 5**2 * math.cos(app.angleFired)** 2)
+                app.birdInMotionX += 10
+                print(app.birdInMotionY)
+        pass
+
 def redrawAll(app, canvas):
         h = app.height
         w = app.width
@@ -92,6 +107,7 @@ def redrawAll(app, canvas):
                 canvas.create_text(65, 40, text='∆(h)', font='PressStart2P 15', fill='#424242')
                 if app.startGame:
                         game.start(app, canvas, w, h)
+                        canvas.create_oval(app.birdInMotionX - 5, app.birdInMotionY - 5, app.birdInMotionX, app.birdInMotionY, fill='red')
                 elif app.showScore:
                         canvas.delete("notscores")
                         scores.show(app, canvas, w, h)
@@ -99,4 +115,4 @@ def redrawAll(app, canvas):
 def startUp():
 	runApp(width=700, height=500)
 
-startUp()
+startUp() 

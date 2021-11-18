@@ -25,7 +25,7 @@ def shortenText(s):
 def sortScores(L):
         for i in range (0, len(L)):
                 for j in range (i,  len(L)):
-                        if L[i][1]< L[j][1]:
+                        if L[i][1]< L[j][1]: 
                                 L[i], L[j] = L[j], L[i]
         return L
 

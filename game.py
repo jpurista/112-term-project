@@ -6,13 +6,6 @@ def start(app, canvas, w, h):
         canvas.create_text(w // 2, h // 4, text='This is the game', font='PressStart2P 24', fill='black')
         canvas.create_rectangle(w // 5, 2 * h // 3, (w // 5) + 20, (2 * h // 3) - 60, fill='brown', outline='brown')
 
-def timerFired(app):
-        # TODO
-        #* physics of launching bird is similar to a spring launching an object 
-        #* equates to 0.5 * spring constant * (distance pushed back ** 2)
-
-        pass
-
 def obstaclePieces(app, canvas):
         # TODO draw obstacle pieces
         pass
@@ -43,7 +36,7 @@ def birdGeneration(level, birdTypes):
 
 def obstacleGeneration(level, type, material):
         # each possible size and shape along with different materials
-        allowedScore = level * 3
+        allowedScore = level * 3 
         result = []
 
         if (level < 3): 
