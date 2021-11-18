@@ -6,13 +6,12 @@ def splashScreen(app, canvas, active):
                 start(app, canvas)
 
 def start(app, canvas):
-        print('fuck :)')
         w = app.width
         h = app.height 
         canvas.create_text(w // 2, h // 3, text='furious fowl', font='PressStart2P 30', fill='black')
  
-        #other.round_rectangle(canvas, (w // 3)-1, (h // 3) + 56, (2 * w// 3)-2, (h // 3) + 96, fill='light slate gray', outline='light slate gray')
-        #other.round_rectangle(canvas, (w // 3)-1, (h // 3) + 108, (2 * w// 3)-2, (h // 3) + 148, fill='light slate gray', outline='light slate gray')
+        other.round_rectangle(canvas, (w // 3)-1, (h // 3) + 56, (2 * w// 3)-2, (h // 3) + 96, fill='light slate gray', outline='light slate gray')
+        other.round_rectangle(canvas, (w // 3)-1, (h // 3) + 108, (2 * w// 3)-2, (h // 3) + 148, fill='light slate gray', outline='light slate gray')
         other.round_rectangle(canvas, (w // 3)+2, (h // 3) + 52, (2 * w// 3)+2, (h // 3) + 92, fill='#E5E9EE', outline='#E5E9EE')
         other.round_rectangle(canvas, (w // 3)+2, (h // 3) + 104, (2 * w// 3)+2, (h // 3) + 144, fill='#E5E9EE', outline='#E5E9EE')
 
@@ -25,4 +24,6 @@ def instruct(app, canvas):
         h = app.height 
 
         other.round_rectangle(canvas, w // 6, h // 6, 5 * w // 6, 5 * h // 6, fill='#E5E9EE', outline='#E5E9EE')
-        canvas.create_text(w // 2, (h // 6) + 25, text='instructions', font='PressStart2P 15', fill='black')
+        canvas.create_text(w // 2, (h // 6) + 25, text='help', font='PressStart2P 15', fill='black')
+        canvas.create_text(w//2, (h // 6) + 80, text='Press the \'play\' button \n or (p) to play the game. \n', font='PressStart2P 15', fill='#424242')
+        canvas.create_text(w//2, (h // 6) + 130, text='Press the \'scores\' button\nor (s) to play the game.\n', font='PressStart2P 15', fill='#424242')

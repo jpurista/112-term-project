@@ -3,9 +3,8 @@ import other
 from cmu_112_graphics import *
 
 def start(app, canvas, w, h):
-        print('game')
         canvas.create_text(w // 2, h // 4, text='This is the game', font='PressStart2P 24', fill='black')
-        canvas.create_rectangle(w // 5, 2 * h // 3, (w // 5) + 20, (2 * h // 3) - 60, fill='brown', outline='brown')
+        other.round_rectangle(canvas, w // 5, 2 * h // 3, (w // 5) + 15, (2 * h // 3) - 60, fill='brown')
 
 def obstaclePieces(app, canvas):
         # TODO draw obstacle pieces

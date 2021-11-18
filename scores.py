@@ -5,8 +5,7 @@ def show(app, canvas, w, h):
         spacing = 40
 
         for i in range(min(10, len(scores))):
-                canvas.create_text((w // 2) - 65, (h // 4) + spacing, text = scores[i][0], font='PressStart2P 20', fill='#424242')
-                #shortenText(scores[i][0]), font='PressStart2P 20', fill='#424242')
+                canvas.create_text((w // 2) - 65, (h // 4) + spacing, text = shortenText(scores[i][0]), font='PressStart2P 20', fill='#424242')
                 canvas.create_text((w // 2) + 100, (h // 4) + spacing, text = scores[i][1], font='PressStart2P 20', fill='green')
                 spacing += 30
 
