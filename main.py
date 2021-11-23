@@ -12,36 +12,35 @@ from cmu_112_graphics import *
 
 def appStarted(app):
         #load images
-        #other.loadimages(app)
-        clouds = ['images/cloud1.png', 'images/cloud2.png', 'images/cloud3.png', 'images/cloud4.png']
-        app.cloud1 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
-        app.cloud2 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
-        app.cloud3 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
-        app.cloud4 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
-        app.cloud1X, app.cloud1Y = 550, 150
-        app.cloud2X, app.cloud2Y = 200, 250
-        app.cloud3X, app.cloud3Y = -10, 400
-        app.cloud4X, app.cloud4Y = 150, 100
+                clouds = ['images/cloud1.png', 'images/cloud2.png', 'images/cloud3.png', 'images/cloud4.png']
+                app.cloud1 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
+                app.cloud2 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
+                app.cloud3 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
+                app.cloud4 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
+                app.cloud1X, app.cloud1Y = 550, 150
+                app.cloud2X, app.cloud2Y = 200, 250
+                app.cloud3X, app.cloud3Y = -10, 400
+                app.cloud4X, app.cloud4Y = 150, 100
 
 	# These variables used more globally
-        app.splashScreen = True
-        app.startGame = False
-        app.showScore = False
-        app.instruct = False
-        app.activeSplash = True
-        app.dragPoints = []
+                app.splashScreen = True
+                app.startGame = False
+                app.showScore = False
+                app.instruct = False
+                app.activeSplash = True
+                app.frogLoc = [
+                        [2 * app.width // 3 - 40, app.height //2 - 40, 2 * app.width // 3 + 40, app.height //2 + 40]
+                ]
 
-        app.birdX = (app.width // 5) - 15
-        app.birdY = (2 * app.height // 3) - 70
+                app.birdX = (app.width // 5) - 15
+                app.birdY = (2 * app.height // 3) - 70
 
-        app.released = False
-        app.birdXReleased = (app.width // 5) - 15
-        app.birdYReleased = (2 * app.height // 3) - 70
+                app.released = False
+                app.birdXReleased = (app.width // 5) - 15
+                app.birdYReleased = (2 * app.height // 3) - 70
 
-        app.birdForce = 10 * math.sqrt((app.birdXReleased - ((app.width // 5) - 15))**2 + (app.birdYReleased - ((2 * app.height // 3) - 70))**2)
-        app.timerDelay = 35
-        app.time = 0
-        app.move = True
+                app.timerDelay = 35
+                app.move = True
         # ? variables not used atm (can be collapsed)
                 # #other stuff for game.py
                 # app.birdTypes = {'normal': 1, 'bomb': 2, 'split': 1.5, 'speed': 2, 'big': 3}
@@ -71,28 +70,18 @@ def mouseReleased(app, event):
         app.angleFired = calculateAngle((app.width // 5) - 15, (2 * app.height // 3) - 70, app.birdXReleased, app.birdYReleased)
 
 def calculateAngle(x1, y1, x2, y2):
-        print(math.degrees(math.atan2(y2-y1, x1-x2)))
         return math.degrees(math.atan2(y2-y1, x1-x2))
 
 def timerFired(app):
         # TODO
-        #* physics of launching bird is similar to a spring launching an object 
-        #* equates to 0.5 * spring constant * (distance pushed back ** 2)
-        # if app.startGame and app.birdInMotionX <= app.width and app.birdInMotionY <= app.height:
-        #         app.birdInMotionY -= (5 + (app.birdInMotionX * math.tan(app.angleFired)) - 9.8 * (app.birdInMotionX**2) )/ (2 * 5**2 * math.cos(app.angleFired)** 2)
-        #         app.birdInMotionX += 10
-        #         print(app.birdInMotionX, app.birdInMotionY)
-        if app.birdX < app.width and (app.birdY + 10 ) < (2 * app.height // 3) and app.move:
-                # * x-component is the horizontal speed
-                if (app.birdX, app.birdY) != ((app.width // 5- 15), (2 * app.height // 3 - 70)):
-                        app.birdX += 5
-                # * y-component is initialPosition + initialVelocity + 0.5*(neg gravity (-9.8))*time**2
-                        # Voy = 3 *math.sin(math.radians(app.angleFired))
-                        Vy = app.birdForce * calculateAngle((app.width // 5 - 15),(app.height// 3 -70), app.birdXReleased, app.birdYReleased)
-                        app.birdY -= ((2 * app.height // 3) - 70) + (Vy * 0.001) - (1**2 // 2) 
-                        print(app.birdY)
-                        app.time += app.timerDelay // 100
+        #* physics of launching bird
+        if app.birdX < app.width and app.birdX > 0 and app.birdY > 0 and (app.birdY + 10 ) < (2 * app.height // 3) and app.move:
+                game.launcher(app)
         
+        #check if bird is in area of the frog circle
+        if  app.frogLoc != [] and app.frogLoc[0][0]< app.birdX < app.frogLoc[0][2] and app.frogLoc[0][1]< app.birdY < app.frogLoc[0][3]:
+                app.frogLoc.pop()
+
         app.cloud1X += 1
         app.cloud2X += 0.75
         app.cloud3X += 0.5
@@ -117,11 +106,12 @@ def redrawAll(app, canvas):
         if not app.splashScreen:
                 other.round_rectangle(canvas, 17, 23, 107, 63,  fill='light slate gray', outline='light slate gray')
                 other.round_rectangle(canvas, 20, 20, 110, 60,  fill='#E5E9EE', outline='#E5E9EE')
+                #this font from: https://fonts.google.comapp.timerDelay * /specimen/Press+Start+2P
                 canvas.create_text(65, 40, text='∆(h)', font='PressStart2P 15', fill='#424242')
                 if app.startGame:
                         game.start(app, canvas, w, h)
-                        canvas.create_oval(app.birdX-10, app.birdY-10, app.birdX+10, app.birdY+10, fill='red', outline='red')
-                        canvas.create_rectangle(0, 2 * h // 3, w, h, fill='green', outline = 'green')
+                        if app.frogLoc != []:
+                                canvas.create_oval(app.frogLoc[0][0], app.frogLoc[0][1], app.frogLoc[0][2], app.frogLoc[0][3], fill='green', outline='green')
                 elif app.showScore:
                         scores.show(app, canvas, w, h)
 

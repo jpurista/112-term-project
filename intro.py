@@ -1,4 +1,3 @@
-import math, random
 import other
 
 def splashScreen(app, canvas, active):
@@ -15,6 +14,7 @@ def start(app, canvas):
         other.round_rectangle(canvas, (w // 3)+2, (h // 3) + 52, (2 * w// 3)+2, (h // 3) + 92, fill='#E5E9EE', outline='#E5E9EE')
         other.round_rectangle(canvas, (w // 3)+2, (h // 3) + 104, (2 * w// 3)+2, (h // 3) + 144, fill='#E5E9EE', outline='#E5E9EE')
 
+        #this font from: https://fonts.google.com/specimen/Press+Start+2P
         canvas.create_text(w // 2, (h // 3) + 72, text='play(p)', font='PressStart2P 15', fill='#424242')
         canvas.create_text(w // 2, (h // 3) + 124, text='scores(s)', font='PressStart2P 15', fill='#424242')
         canvas.create_text(w - 90, h - 20, text='instructions(i)', font='PressStart2P 10', fill='#424242')

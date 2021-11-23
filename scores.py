@@ -1,5 +1,5 @@
 def show(app, canvas, w, h):
-        print('scores')
+        #this font from: https://fonts.google.com/specimen/Press+Start+2P
         canvas.create_text(w // 2, h // 4, text='Scoreboard', font='PressStart2P 25', fill='black')
         scores = sortScores(readScores())
         spacing = 40

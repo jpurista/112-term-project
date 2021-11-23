@@ -1,4 +1,4 @@
-import random, math
+import math, random
 from cmu_112_graphics import *
 
 # from https://codingshiksha.com/python/python-3-tkinter-drawing-rectangle-with-rounded-corners-on-canvas-window-gui-desktop-app-full-project-for-beginners/
@@ -8,7 +8,7 @@ def round_rectangle(canvas, x1, y1, x2, y2, radius=17, **kwargs):
                         x2, y2-radius, x2, y2, x2-radius, y2, x2-radius, y2,
                         x1+radius, y2, x1+radius, y2, x1, y2, x1, y2-radius,
                         x1, y2-radius, x1, y1+radius, x1, y1+radius, x1, y1]
-        return canvas.create_polygon(points, **kwargs)
+        return canvas.create_polygon(points, **kwargs, smooth=True)
 
 def input(app, event, delivery):
         h = app.height
@@ -58,6 +58,7 @@ def input(app, event, delivery):
                         if event.key == 'r':
                                 app.birdX = (app.width // 5) - 15
                                 app.birdY = (2 * app.height // 3) - 70
+                                app.frogLoc = [[2 * app.width // 3 - 40, app.height //2 - 40, 2 * app.width // 3 + 40, app.height //2 + 40],[1,2,3,4]]
                         ########################
                         if app.instruct and event.key:
                                 app.instruct = False
