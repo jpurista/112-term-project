@@ -12,6 +12,7 @@ from cmu_112_graphics import *
 
 def appStarted(app):
         #load images
+                #all images of clouds drawn by me in photoshop
                 clouds = ['images/cloud1.png', 'images/cloud2.png', 'images/cloud3.png', 'images/cloud4.png']
                 app.cloud1 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
                 app.cloud2 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
@@ -28,7 +29,7 @@ def appStarted(app):
                 app.showScore = False
                 app.instruct = False
                 app.activeSplash = True
-                app.frogLoc = [
+                app.pigLoc = [
                         [2 * app.width // 3 - 40, app.height //2 - 40, 2 * app.width // 3 + 40, app.height //2 + 40]
                 ]
 
@@ -77,10 +78,11 @@ def timerFired(app):
         #* physics of launching bird
         if app.birdX < app.width and app.birdX > 0 and app.birdY > 0 and (app.birdY + 10 ) < (2 * app.height // 3) and app.move:
                 game.launcher(app)
-        
+
         #check if bird is in area of the frog circle
-        if  app.frogLoc != [] and app.frogLoc[0][0]< app.birdX < app.frogLoc[0][2] and app.frogLoc[0][1]< app.birdY < app.frogLoc[0][3]:
-                app.frogLoc.pop()
+        if  app.pigLoc != [] and app.pigLoc[0][0]< app.birdX < app.pigLoc[0][2] and app.pigLoc[0][1]< app.birdY < app.pigLoc[0][3]:
+                app.pigLoc.pop()
+
 
         app.cloud1X += 1
         app.cloud2X += 0.75
@@ -110,8 +112,8 @@ def redrawAll(app, canvas):
                 canvas.create_text(65, 40, text='∆(h)', font='PressStart2P 15', fill='#424242')
                 if app.startGame:
                         game.start(app, canvas, w, h)
-                        if app.frogLoc != []:
-                                canvas.create_oval(app.frogLoc[0][0], app.frogLoc[0][1], app.frogLoc[0][2], app.frogLoc[0][3], fill='green', outline='green')
+                        if app.pigLoc != []:
+                                canvas.create_oval(app.pigLoc[0][0], app.pigLoc[0][1], app.pigLoc[0][2], app.pigLoc[0][3], fill='green', outline='green')
                 elif app.showScore:
                         scores.show(app, canvas, w, h)
 

@@ -76,7 +76,7 @@ def obstacleGeneration(level, structureType, material):
         elif (level > 10): 
                 material['metal'] = 3
 
-        # TODO this part is similar to the second section of birdGeneration 
+        # TODO this part is  similar to the second section of birdGeneration 
         while allowedScore > 1:
                 structType = random.choice(list(type))
                 structValue = structureType[structType]
