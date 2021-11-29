@@ -1,14 +1,21 @@
 import math, random
-import other, intro, game, scores
+import other, intro, game, scores, nav
 from cmu_112_graphics import *
-
-# * if app.released is True, then set birdForce, angleFired, app.birdXReleased, app.birdYReleased, 
 
 # Comment instructions:
         # TODO todo makes it orange
         # ? question mark makes it blue
         # * asterisk makes it green
         # BUG makes first word pink
+
+#altered version from 15-112 homeworks found on cs.cmu.edu/~112
+import decimal
+def roundHalfDown(d):
+        # Round to nearest with ties going towards from zero.
+        rounding = decimal.ROUND_HALF_DOWN
+        # See other rounding options here:
+        # https://docs.python.org/3/library/decimal.html#rounding-modes
+        return int(decimal.Decimal(d).to_integral_value(rounding=rounding))
 
 def appStarted(app):
         #load images
@@ -23,25 +30,38 @@ def appStarted(app):
                 app.cloud3X, app.cloud3Y = -10, 400
                 app.cloud4X, app.cloud4Y = 150, 100
 
+                #all of these images are also made by me in photoshop
+                # app.pig = app.loadImage('images/pig.png')
+                app.pigLoc = [
+                        [2 * app.width // 3 - 40, app.height //2 - 40, 2 * app.width // 3 + 40, app.height //2 + 40],
+                ]
+
 	# These variables used more globally
                 app.splashScreen = True
-                app.startGame = False
+                app.gameScreen = False
                 app.showScore = False
                 app.instruct = False
                 app.activeSplash = True
-                app.pigLoc = [
-                        [2 * app.width // 3 - 40, app.height //2 - 40, 2 * app.width // 3 + 40, app.height //2 + 40]
-                ]
-
-                app.birdX = (app.width // 5) - 15
-                app.birdY = (2 * app.height // 3) - 70
-
-                app.released = False
-                app.birdXReleased = (app.width // 5) - 15
-                app.birdYReleased = (2 * app.height // 3) - 70
+                app.startGame = False
+                app.build = False
+                app.openLevel = False
+                app.move = True
 
                 app.timerDelay = 35
-                app.move = True
+
+        # X and Y position at different points and different situations
+                app.birdX = (app.width // 5) - 15
+                app.birdY = app.height // 2
+
+                app.birdXClicked = 0
+                app.birdYClicked = 0
+
+                app.birdXReleased = 0
+                app.birdYReleased = 0
+
+                app.angleFired = 0
+
+
         # ? variables not used atm (can be collapsed)
                 # #other stuff for game.py
                 # app.birdTypes = {'normal': 1, 'bomb': 2, 'split': 1.5, 'speed': 2, 'big': 3}
@@ -54,10 +74,18 @@ def appStarted(app):
                 # app.obstaclesList = game.obstacleGeneration(app.level, app.structureTypes, app.structureMaterials)
 
 def keyPressed(app, event):
-        other.input(app, event, 'key')
+        if app.gameScreen == True:
+                nav.gameNav(app, event, 'key')
+        else:
+                nav.nav(app, event, 'key')
 
 def mousePressed(app, event):
-        other.input(app, event, 'mouse')
+        app.birdXClicked = event.x
+        app.birdYClicked = event.y
+        if app.gameScreen == True:
+                nav.gameNav(app, event, 'mouse')
+        else:
+                nav.nav(app, event, 'mouse')
 
 def mouseDragged(app, event):
         app.move = False
@@ -68,18 +96,14 @@ def mouseReleased(app, event):
         app.move = True
         app.birdXReleased = event.x
         app.birdYReleased = event.y
-        app.angleFired = calculateAngle((app.width // 5) - 15, (2 * app.height // 3) - 70, app.birdXReleased, app.birdYReleased)
-
-def calculateAngle(x1, y1, x2, y2):
-        return math.degrees(math.atan2(y2-y1, x1-x2))
+        app.angleFired = roundHalfDown(app.birdYClicked-app.birdYReleased)
 
 def timerFired(app):
-        # TODO
         #* physics of launching bird
         if app.birdX < app.width and app.birdX > 0 and app.birdY > 0 and (app.birdY + 10 ) < (2 * app.height // 3) and app.move:
                 game.launcher(app)
 
-        #check if bird is in area of the frog circle
+        #check if bird is in area of the pig circle
         if  app.pigLoc != [] and app.pigLoc[0][0]< app.birdX < app.pigLoc[0][2] and app.pigLoc[0][1]< app.birdY < app.pigLoc[0][3]:
                 app.pigLoc.pop()
 
@@ -110,14 +134,15 @@ def redrawAll(app, canvas):
                 other.round_rectangle(canvas, 20, 20, 110, 60,  fill='#E5E9EE', outline='#E5E9EE')
                 #this font from: https://fonts.google.comapp.timerDelay * /specimen/Press+Start+2P
                 canvas.create_text(65, 40, text='∆(h)', font='PressStart2P 15', fill='#424242')
-                if app.startGame:
-                        game.start(app, canvas, w, h)
-                        if app.pigLoc != []:
-                                canvas.create_oval(app.pigLoc[0][0], app.pigLoc[0][1], app.pigLoc[0][2], app.pigLoc[0][3], fill='green', outline='green')
+                if app.gameScreen:
+                        nav.gameNavScreen(app, canvas, w, h)
                 elif app.showScore:
                         scores.show(app, canvas, w, h)
+                elif app.startGame:
+                        game.start(app, canvas, w, h)
+                elif app.buildLevel:
+                        game.build(app, canvas, w, h)
+                elif app.openLevel:
+                        game.openLevel(app, canvas, w, h)
 
-def startUp():
-	runApp(width=700, height=500)
-
-startUp()
+runApp(width=700, height=500)
