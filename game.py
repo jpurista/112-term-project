@@ -16,13 +16,11 @@ def start(app, canvas, w, h):
         for i in range(len(app.structures)):
                 other.round_rectangle(canvas, app.structures[i][0], app.structures[i][1], app.structures[i][2], app.structures[i][3], radius = 0, fill='gray', outline='dimgray')
 
-
 def build(app, canvas, w, h):
-
-        print('this is the actual print to build the game')
+        pass
 
 def openLevel(app, canvas, w, h):
-        print('this is the actual print to open a user-built level')
+        pass
 
 def launcher(app):
         if app.startGame and (app.birdX, app.birdY) != ((app.width // 5- 15), (2 * app.height // 3 - 70)):
@@ -39,9 +37,6 @@ def launcher(app):
                         app.birdY  +=  multiplier * math.sqrt(0.25 * app.timerDelay * abs(app.angleFired))
                 else:
                         app.birdY  -=  multiplier * math.sqrt(0.25 * app.timerDelay * app.angleFired)
-                
-                print(f'angle = {app.angleFired}')
-                print(app.birdX, app.birdY)
 
 def instruct(app, canvas):
         w = app.width

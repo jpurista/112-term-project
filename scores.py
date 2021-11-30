@@ -1,7 +1,7 @@
 def show(app, canvas, w, h):
         #this font from: https://fonts.google.com/specimen/Press+Start+2P
         canvas.create_text(w // 2, h // 4, text='Scoreboard', font='PressStart2P 25', fill='black')
-        scores = sortScores(readScores())
+        scores = sortScores(app.results)
         spacing = 40
 
         for i in range(min(10, len(scores))):
@@ -28,14 +28,14 @@ def sortScores(L):
                                 L[i], L[j] = L[j], L[i]
         return L
 
-def writeScores(app):
-        pass
+def writeScores(app, username, score):
+        app.results.append((username, score))
 
 def readScores():
         # from https://stackoverflow.com/questions/32327936/how-to-load-data-from-a-csv-file-without-importing-the-csv-module-library
-        with open('scores.csv', 'r') as f:
+        with open('scores.csv', 'r') as csv:
                 results = []
-                for line in f:
+                for line in csv:
                         words = line.split(',')
                         results.append((words[0], int(words[1][:len(words[1])])))
                 return results

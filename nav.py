@@ -27,30 +27,23 @@ def nav(app, event, delivery):
                 elif (app.splashScreen):
                         if (w // 3 < event.x < 2 * w // 3) and ((h // 3) + 50 < event.y < (h // 3) + 90)  and not app.instruct: #this opens up the game menu
                                 default1(app)
-                                print('game menu')
                         elif (w // 3 < event.x < 2 * w // 3) and ((h // 3) + 100 < event.y < (h // 3) + 140) and not app.instruct: #this opens up the scores page
                                 default2(app)
-                                print('show scores')
                         elif (event.x > w - 170) and (event.y > h - 30): #this opens the instructions pop-up
                                 app.instruct = True
-                                print('show intructions')
 
                 if (not app.splashScreen):
                         if (20 < event.x < 110) and (20 < event.y < 60): #takes you back home
                                 default3(app)
-                                print('back home')
 
         elif delivery == 'key':
                 if app.splashScreen and not app.instruct:
                         if event.key == 'p':
                                 default1(app)
-                                print('game menu')
                         elif event.key == 's':
                                 default2(app)
-                                print('show scores')
                         elif event.key == 'i':
                                 app.instruct = True
-                                print('show instructions')
                 else:
                         # ? this is just a quick workaround to reseting the moving circle
                         if event.key == 'r':
@@ -60,10 +53,8 @@ def nav(app, event, delivery):
                         ########################
                         if app.instruct and event.key:
                                 app.instruct = False
-                                print('hide instructions')
                         if event.key == 'h':
                                 default3(app)
-                                print('back home')
 
 def gameNavScreen(app, canvas, w, h):
         #* this is for further gui expansion with options to play a pre-built level, build your own, and open a saved level
@@ -89,43 +80,35 @@ def gameNav(app, event, delivery):
         h = app.height
         w = app.width
 
-        if delivery == 'mouse' and not app.gameInstruct:
-                if not app.splashScreen and (20 < event.x < 110) and (20 < event.y < 60): #this takes you back home
+        if delivery == 'mouse':
+                if event.x and app.gameInstruct:
+                        app.gameInstruct = False
+                elif not app.splashScreen and (20 < event.x < 110) and (20 < event.y < 60): #this takes you back home
                        default3(app)
-                       print('back home')
                 elif ((w // 4) - 2 < event.x <  (3 * w// 4) + 2) and ((h // 3) + 52 < event.y < (h // 3) + 96): #this is for play pre-built game
                         default4(app)
                         app.startGame = True
-                        print('play game')
                 elif ((w // 4) -2 < event.x < (2 * w// 4)) and ((h // 3) + 104 < event.y < (h // 3) + 148): #this is for build
                         default4(app)
                         app.buildLevel = True
-                        print('build level')
                 elif ((2 * w // 4) - 4 < event.x < (3 * w// 4) +4) and ((h // 3) + 104 < event.y < (h // 3) + 148): #this is for open level
                         default4(app)
                         app.openLevel = True
-                        print('open level')
                 elif (event.x > w - 170) and (event.y > h - 30): #this opens the instructions pop-up
                         app.gameInstruct = True
-        elif delivery == 'key' and not app.gameInstruct:
-                if event.key == 'h':
+        elif delivery == 'key':
+                if app.gameInstruct and event.key:
+                        app.gameInstruct = False
+                elif event.key == 'h':
                         default3(app)
-                        print('back home')
                 elif event.key == 'p':
                         default4(app)
                         app.startGame = True
-                        print('play game')
                 elif event.key == 'b':
                         default4(app)
                         app.buildLevel = True
-                        print('build level')
                 elif event.key == 'o':
                         default4(app)
                         app.openLevel = True
-                        print('open level')
                 elif event.key == 'i':
                         app.gameInstruct = True
-        else:
-                if app.gameInstruct and event.key:
-                        app.gameInstruct = False
-                        print('hide instructions')

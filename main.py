@@ -8,7 +8,6 @@ from cmu_112_graphics import *
         # * asterisk makes it green
         # BUG makes first word pink
 
-
 def appStarted(app):
                 app.widthConst = 2 * app.width // 3
                 app.heightConst = app.height // 2
@@ -32,8 +31,10 @@ def appStarted(app):
                 if app.level == 0:
                         app.pigLoc = []
 
+                app.username = ''
 
 	# These variables used more globally
+                app.results = scores.readScores()
                 app.splashScreen = True
                 app.gameScreen = False
                 app.showScore = False
@@ -43,6 +44,7 @@ def appStarted(app):
                 app.startGame = False
                 app.build = False
                 app.openLevel = False
+                app.end = False
                 app.move = True
                 app.levelChange = False
                 app.endScreen = False
@@ -53,10 +55,8 @@ def appStarted(app):
         # X and Y position at different points and different situations
                 app.birdX = (app.width // 5) - 15
                 app.birdY = app.heightConst
-
                 app.birdXClicked = 0
                 app.birdYClicked = 0
-
                 app.birdXReleased = 0
                 app.birdYReleased = 0
 
@@ -91,15 +91,21 @@ def mouseReleased(app, event):
         app.angleFired = other.roundHalfDown(app.birdYClicked-app.birdYReleased)
 
 def timerFired(app):
+        if app.gameScreen:
+                other.gameNotActive(app)
 
         if app.startGame and app.level <= 4:
                 app.scoreMultiplier += app.timerDelay*10
 
         if app.pigLoc == []:
-                if app.level > 4:
-                        app.endScreen = True
-                        app.levelChange = False
-                elif app.level <= 4:
+                if app.level >= 4 and app.end == True:
+                        app.end = False
+                        app.username = app.getUserInput('What is your username?')
+                        app.showMessage(f'You finished the pre-built levels!\n {app.username}, you scored: {other.roundHalfDown(1/(app.totalScore*(1/app.scoreMultiplier)))}')
+                        scores.writeScores(app, app.username, other.roundHalfDown(1/(app.totalScore*(1/app.scoreMultiplier))))
+                        other.gameNotActive(app)
+                        app.splashScreen = True
+                elif app.level < 4 and app.end == False:
                         app.levelChange = True
                         app.level += 1
                         app.levelScore = 0
@@ -113,7 +119,6 @@ def timerFired(app):
                         [app.widthConst - 50, 0 - 90, app.widthConst - 10, 0 - 50],
                         [app.widthConst + 10, 0 - 90, app.widthConst + 50, 0 - 50]
                 ]
-
         if app.level == 2  and app.levelChange:
                 app.levelChange = False
                 app.pigLoc = [
@@ -121,11 +126,24 @@ def timerFired(app):
                         [app.widthConst - 80, 0 - 50, app.widthConst - 40, 0 - 10],
                         [app.widthConst - 20, 0 - 50, app.widthConst + 20, 0 - 10]
                 ]
+        if app.level == 3 and app.levelChange:
+                app.levelChange = False
+                app.pigLoc = [
+                        [app.widthConst + 40, 0 - 50, app.widthConst + 80, 0 - 10],
+                        [app.widthConst - 80, 0 - 50, app.widthConst - 40, 0 - 10],
+                        [app.widthConst - 20, 0 - 50, app.widthConst + 20, 0 - 10]
+                ]
+        if app.level == 4 and app.levelChange:
+                app.levelChange = False
+                app.pigLoc = [
+                        [app.widthConst + 40, 0 - 50, app.widthConst + 80, 0 - 10],
+                        [app.widthConst - 80, 0 - 50, app.widthConst - 40, 0 - 10],
+                        [app.widthConst - 20, 0 - 50, app.widthConst + 20, 0 - 10]
+                ]
+                app.end = True
 
         if app.birdX < app.width and app.birdX > 0 and app.birdY > 0 and (app.birdY + 10 ) < (2 * app.height // 3) and app.move:
                 game.launcher(app)
-
-        print(app.level)
 
         #makes pigs fall as long as they don't touch the structures
         for i in range(len(app.pigLoc)):
@@ -163,14 +181,10 @@ def redrawAll(app, canvas):
         canvas.create_image(app.cloud3X, app.cloud3Y, image=ImageTk.PhotoImage(app.cloud3))
         canvas.create_image(app.cloud4X, app.cloud4Y, image=ImageTk.PhotoImage(app.cloud4))
 
-        if app.endScreen:
-                canvas.create_rectangle(0, 0, w, h, fill='deep sky blue')
-                intro.finishedLevels(app, canvas, w, h)
-
         if app.splashScreen:
-                intro.splashScreen(app, canvas, app.activeSplash)
+                intro.splashScreen(app, canvas, app.activeSplash, w, h)
                 if app.instruct == True:
-                        intro.instruct(app, canvas)
+                        intro.instruct(app, canvas, w, h)
         if not app.splashScreen:
                 other.round_rectangle(canvas, 17, 23, 107, 63,  fill='light slate gray', outline='light slate gray')
                 other.round_rectangle(canvas, 20, 20, 110, 60,  fill='#E5E9EE', outline='#E5E9EE')
@@ -186,6 +200,5 @@ def redrawAll(app, canvas):
                         game.build(app, canvas, w, h)
                 elif app.openLevel:
                         game.openLevel(app, canvas, w, h)
-
 
 runApp(width=700, height=500)

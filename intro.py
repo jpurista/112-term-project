@@ -1,12 +1,10 @@
 import other
 
-def splashScreen(app, canvas, active):
+def splashScreen(app, canvas, active, w, h):
         if active: 
-                start(app, canvas)
+                start(app, canvas, w, h)
 
-def start(app, canvas):
-        w = app.width
-        h = app.height 
+def start(app, canvas, w, h):
         canvas.create_text(w // 2, h // 3, text='furious fowl', font='PressStart2P 30', fill='black')
  
         other.round_rectangle(canvas, (w // 3)-1, (h // 3) + 56, (2 * w// 3)-2, (h // 3) + 96, fill='light slate gray', outline='light slate gray')
@@ -19,16 +17,9 @@ def start(app, canvas):
         canvas.create_text(w // 2, (h // 3) + 124, text='scores(s)', font='PressStart2P 15', fill='#424242')
         canvas.create_text(w - 90, h - 20, text='instructions(i)', font='PressStart2P 10', fill='#424242')
 
-def instruct(app, canvas):
-        w = app.width
-        h = app.height 
-
+def instruct(app, canvas, w, h):
         other.round_rectangle(canvas, w // 6, h // 6, 5 * w // 6, 5 * h // 6, fill='#E5E9EE', outline='#E5E9EE')
         canvas.create_text(w // 2, h // 6 + 25, text='help', font='PressStart2P 15', fill='black')
         canvas.create_text(w // 6 + 25, h // 6 + 25, text='X', font='PressStart2P 15', fill='black')
         canvas.create_text(w // 2, h // 6 + 100, text='Press the \'play\' button or\n(p)to see the game menu.\n', font='PressStart2P 15', fill='#424242')
         canvas.create_text(w // 2, h // 6 + 150, text='Press the \'scores\' button or\n(s)to play the game.\n', font='PressStart2P 15', fill='#424242')
-
-def finishedLevels(app, canvas, w, h):
-        canvas.create_text(w // 2, 2 * h // 5, text = 'you finished the\npre-built levels!', font='PressStart2P 15', fill='black')
-        canvas.create_text(w // 2, 2 * h // 5 + 75, text = f'your score was: {other.roundHalfDown(1/(app.totalScore*(1/app.scoreMultiplier)))}', font='PressStart2P 10', fill='#424242')
