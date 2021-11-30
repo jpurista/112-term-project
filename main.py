@@ -147,7 +147,7 @@ def timerFired(app):
 
         #makes pigs fall as long as they don't touch the structures
         for i in range(len(app.pigLoc)):
-                if app.pigLoc[i][3] < app.heightConst + 10:
+                if (app.pigLoc[i][3] < app.heightConst + 10):
                         app.pigLoc[i][1] += 5
                         app.pigLoc[i][3] += 5
 

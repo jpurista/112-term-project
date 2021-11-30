@@ -43,6 +43,7 @@ def instruct(app, canvas):
         h = app.height 
         
         other.round_rectangle(canvas, w // 6, h // 6, 5 * w // 6, 5 * h // 6, fill='#E5E9EE', outline='#E5E9EE')
+        #this font from: https://fonts.google.com/specimen/Press+Start+2P
         canvas.create_text(w // 2, h // 6 + 25, text='help', font='PressStart2P 15', fill='black')
         canvas.create_text(w // 6 + 25, h // 6 + 25, text='X', font='PressStart2P 15', fill='black')
         canvas.create_text(w // 2, h // 6 + 100, text='Press the \'play pre-built\'\nbutton or (p) to play. \n', font='PressStart2P 15', fill='#424242')

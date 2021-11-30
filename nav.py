@@ -9,7 +9,7 @@ def default2(app):
         app.showScore = True
 
 def default3(app):
-        app.gameScreen, app.gameScreen, app.startGame, app.buildLevel, app.openLevel = False, False, False, False, False
+        app.showScore, app.gameScreen, app.startGame, app.buildLevel, app.openLevel = False, False, False, False, False
         app.splashScreen = True
 
 def default4(app):
@@ -58,7 +58,7 @@ def nav(app, event, delivery):
 
 def gameNavScreen(app, canvas, w, h):
         #* this is for further gui expansion with options to play a pre-built level, build your own, and open a saved level
-
+        #this font from: https://fonts.google.com/specimen/Press+Start+2P
         canvas.create_text(w // 2, h // 4, text='Play Game', font='PressStart2P 24', fill='black')
         other.round_rectangle(canvas, (w // 4) - 2, (h // 3) + 56, (3 * w// 4) -2, (h // 3) + 96, fill='light slate gray', outline='light slate gray')
         other.round_rectangle(canvas, (w // 4) - 4, (h // 3) + 108, (2 * w// 4) -4, (h // 3) + 148, fill='light slate gray', outline='light slate gray')
@@ -68,6 +68,7 @@ def gameNavScreen(app, canvas, w, h):
         other.round_rectangle(canvas, (w // 4) , (h // 3) + 104, (2 * w// 4), (h // 3) + 144, fill='#E5E9EE', outline='#E5E9EE')
         other.round_rectangle(canvas, (2 * w // 4)  + 4, (h // 3) + 104, (3 * w// 4) +4, (h // 3) + 144, fill='#E5E9EE', outline='#E5E9EE')
 
+        #this font from: https://fonts.google.com/specimen/Press+Start+2P
         canvas.create_text(w // 2, (h // 3) + 72, text='Play Pre-Built(p)', font='PressStart2P 15', fill='#424242')
         canvas.create_text(3 * w // 8, (h // 3) + 124, text='Build(b)', font='PressStart2P 15', fill='#424242')
         canvas.create_text(5 * w // 8, (h // 3) + 124, text='Open(o)', font='PressStart2P 15', fill='#424242')
