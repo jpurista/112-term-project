@@ -116,9 +116,20 @@ def getDistance(x1, y1, x2, y2):
 def timerFired(app):
         if app.buildLevel == True and app.curPieceXReleased != -100 and app.curPiece != '':
                 app.stuff.append([app.curPiece, app.curPieceXReleased, app.curPieceYReleased])
+                app.stuff.pop(0)
                 app.curPieceXReleased = -100
                 app.curPieceYReleased = -100
                 app.curPiece != ''
+        
+        for item in app.stuff:
+                if 'small' in item[0]:
+                        app.buildPigLoc.append([item[1] - 20, item[2] - 20, item[1] + 20, item[2] + 20])
+                elif 'big' in item[0]:
+                        app.buildPigLoc.append([item[1] - 40, item[2] - 40, item[1] + 40, item[2] + 40])
+                elif 'long' in item[0]:
+                        app.buildStructures.append([item[1] - 90, item[2] - 12.5, item[1] + 90, item[2] + 12.5])
+                else:
+                        app.buildStructures.append([item[1] - 12.5, item[2] - 90, item[1] + 12.5, item[2] + 90])
 
         if app.gameScreen:
                 other.gameNotActive(app)

@@ -1,4 +1,4 @@
-import math, random
+import math, random, nav
 import other
 from cmu_112_graphics import *
 
@@ -10,7 +10,7 @@ def start(app, canvas, w, h):
         canvas.create_text(app.width // 2, app.height // 8, text = f'level: {app.level}', font='PressStart2P 15', fill='black')
         canvas.create_text(app.width // 2, app.height // 8 + 20, text = f' level score: {app.levelScore}', font='PressStart2P 15', fill='black')
         canvas.create_text(app.width // 2, app.height // 8 + 40, text = f'total score: {app.totalScore}', font='PressStart2P 15', fill='black')
-        drawPigStruct(app, canvas, app.pigLocs, app.structures)
+        drawPigStruct(app, canvas, app.pigLoc, app.structures)
 
 def drawPigStruct(app, canvas, pigs, structs):
         for i in range(len(pigs)):
@@ -36,49 +36,35 @@ def build(app, canvas, w, h):
         other.round_rectangle(canvas, 12.5 * app.width // 16 - 10, 3 * app.height // 4 + 15, 12.5 * app.width // 16 + 10, app.height - 35,fill='gray', outline='dimgray') #tall structure
 
         canvas.create_oval(app.curPieceX-10, app.curPieceY-10, app.curPieceX+10, app.curPieceY+10, fill='blue', outline='red')
-        redrawLevel(app, canvas, w, h)
+        drawPigStruct(app, canvas, app.buildPigLoc, app.buildStructures)
 
 
 #got help from https://www.w3schools.com/python/python_file_write.asp for read/write functions
 def saveLevel(app):
         filename = app.getUserInput('what filename would you like this to be called?')
         userLevel = open(f'userLevels/{filename}.csv', 'x')
-        userLevel.write(f'{app.buildPigLocs},{app.buildStructures}')
-        # userLevel.write(f'{app.stuff[0]}, {app.stuff[1]}')
+        userLevel.write(f'{app.buildPigLoc},{app.buildStructures}')
         userLevel.close()
         app.stuff = []
-        app.splashScreen = True
+        nav.default3(app)
 
 def openLevel(app, canvas, w, h):
         filename = app.getUserInput('what filename would you like to open (must be exact, also include .csv)')
-        openedFile = open(f'userLevels/{filename}', 'r')
-        result = []
-        for line in openedFile:
-                words = line.split('')
-                result.append(words)
+        csv = open(f'userLevels/{filename}', 'r')
+        results = []
+        for item in csv:
+                results+=item
         #TODO draw every element from the openedFile
-        pigs = result[0]
-        structs = result[1]
+        pigs = results[0]
+        structs = results[1]
         other.round_rectangle(canvas, 45, 75, app.width//6 + 30, 2*app.height//3 - 15, fill='light sky blue')
         canvas.create_oval(app.birdX-10, app.birdY-10, app.birdX+10, app.birdY+10, fill='red', outline='red')
         canvas.create_rectangle(0, 2 * h // 3, w, h, fill='green', outline = 'green')
 
-        canvas.create_text(app.width // 2, app.height // 8, text = f'level: {app.level}', font='PressStart2P 15', fill='black')
-        canvas.create_text(app.width // 2, app.height // 8 + 20, text = f' level score: {app.levelScore}', font='PressStart2P 15', fill='black')
-        canvas.create_text(app.width // 2, app.height // 8 + 40, text = f'total score: {app.totalScore}', font='PressStart2P 15', fill='black')
+        # canvas.create_text(app.width // 2, app.height // 8, text = f'level: {app.level}', font='PressStart2P 15', fill='black')
+        # canvas.create_text(app.width // 2, app.height // 8 + 20, text = f' level score: {app.levelScore}', font='PressStart2P 15', fill='black')
+        # canvas.create_text(app.width // 2, app.height // 8 + 40, text = f'total score: {app.totalScore}', font='PressStart2P 15', fill='black')
         drawPigStruct(app, canvas, pigs, structs)
-
-def redrawLevel(app, canvas, w, h):
-        for item in app.stuff:
-                if 'small' in item[0]:
-                        app.buildPigLoc.append([item[1] - 20, item[2] - 20, item[1] + 20, item[2] + 20])
-                elif 'big' in item[0]:
-                        app.buildPigLoc.append([item[1] - 40, item[2] - 40, item[1] + 40, item[2] + 40])
-                elif 'long' in item[0]:
-                        app.buildStructures.append([item[1] - 90, item[2] - 12.5, item[1] + 90, item[2] + 12.5])
-                else:
-                        app.buildStructures.append([item[1] - 12.5, item[2] - 90, item[1] + 12.5, item[2] + 90])
-        drawPigStruct(app, canvas, app.buildPigLoc, app.buildStructures)
 
 def launcher(app):
         multiplier = 1
