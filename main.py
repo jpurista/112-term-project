@@ -32,6 +32,7 @@ def appStarted(app):
                         app.pigLoc = []
 
                 app.username = ''
+                app.stuff = []
 
 	# These variables used more globally
                 app.results = scores.readScores()
@@ -41,13 +42,22 @@ def appStarted(app):
                 app.instruct = False
                 app.gameInstruct = False
                 app.activeSplash = True
+                app.buildLevel = False
                 app.startGame = False
-                app.build = False
                 app.openLevel = False
                 app.end = False
                 app.move = True
                 app.levelChange = False
                 app.endScreen = False
+
+        # this stuff is for the level editor/builder
+                app.curPiece = ''
+                app.curPieceX = -100
+                app.curPieceY = -100
+                app.curPieceXReleased = -1
+                app.curPieceYReleased = -1
+                app.buildPigLoc = []
+                app.buildStructures = []
 
                 app.scoreMultiplier = 1
                 app.timerDelay = 35
@@ -64,7 +74,7 @@ def appStarted(app):
 
 
 def keyPressed(app, event):
-        if app.gameScreen == True:
+        if app.gameScreen == True or app.buildLevel == True:
                 nav.gameNav(app, event, 'key')
         else:
                 nav.nav(app, event, 'key')
@@ -72,16 +82,20 @@ def keyPressed(app, event):
 def mousePressed(app, event):
         app.birdXClicked = event.x
         app.birdYClicked = event.y
-        if app.gameScreen == True:
+        if app.gameScreen == True or app.buildLevel == True:
                 nav.gameNav(app, event, 'mouse')
         else:
                 nav.nav(app, event, 'mouse')
+
 
 def mouseDragged(app, event):
         if app.startGame:
                 app.move = False
         app.birdX = event.x
         app.birdY = event.y
+        if app.buildLevel == True and app.curPiece != '':
+                app.curPieceX = event.x
+                app.curPieceY = event.y
 
 def mouseReleased(app, event):
         if app.startGame:
@@ -90,7 +104,22 @@ def mouseReleased(app, event):
         app.birdYReleased = event.y
         app.angleFired = other.roundHalfDown(app.birdYClicked-app.birdYReleased)
 
+        if app.buildLevel == True and (app.curPieceX, app.curPieceY) != (-1, -1):
+                app.curPieceXReleased = event.x
+                app.curPieceYReleased = event.y
+                app.curPieceX = -100
+                app.curPieceY = -100
+
+def getDistance(x1, y1, x2, y2):
+        return math.sqrt(math.pow(x2-x1, 2) + math.pow(y2-y1, 2))
+
 def timerFired(app):
+        if app.buildLevel == True and app.curPieceXReleased != -100 and app.curPiece != '':
+                app.stuff.append([app.curPiece, app.curPieceXReleased, app.curPieceYReleased])
+                app.curPieceXReleased = -100
+                app.curPieceYReleased = -100
+                app.curPiece != ''
+
         if app.gameScreen:
                 other.gameNotActive(app)
 
@@ -101,6 +130,7 @@ def timerFired(app):
                 if app.level >= 4 and app.end == True:
                         app.end = False
                         app.username = app.getUserInput('What is your username?')
+                        if app.username == None: app.username = ' '
                         app.showMessage(f'You finished the pre-built levels!\n {app.username}, you scored: {other.roundHalfDown(1/(app.totalScore*(1/app.scoreMultiplier)))}')
                         scores.writeScores(app, app.username, other.roundHalfDown(1/(app.totalScore*(1/app.scoreMultiplier))))
                         other.gameNotActive(app)
@@ -113,11 +143,12 @@ def timerFired(app):
         if app.level == 1 and app.levelChange:
                 app.levelChange = False
                 app.pigLoc = [
-                        [app.widthConst + 40, 0 - 50, app.widthConst + 80, 0 - 10],
-                        [app.widthConst - 80, 0 - 50, app.widthConst - 40, 0 - 10],
-                        [app.widthConst - 20, 0 - 50, app.widthConst + 20, 0 - 10],
-                        [app.widthConst - 50, 0 - 90, app.widthConst - 10, 0 - 50],
-                        [app.widthConst + 10, 0 - 90, app.widthConst + 50, 0 - 50]
+                        [app.widthConst - 80, 0 - 50, app.widthConst - 40, 0 - 10],#bottom left
+                        [app.widthConst - 20, 0 - 50, app.widthConst + 20, 0 - 10],#bottom middle
+                        [app.widthConst + 40, 0 - 50, app.widthConst + 80, 0 - 10],#bottom right
+
+                        # [app.widthConst - 50, 0 - 90, app.widthConst - 10, 0 - 50],#top left
+                        # [app.widthConst + 10, 0 - 90, app.widthConst + 50, 0 - 50],#top right
                 ]
         if app.level == 2  and app.levelChange:
                 app.levelChange = False
@@ -126,6 +157,9 @@ def timerFired(app):
                         [app.widthConst - 80, 0 - 50, app.widthConst - 40, 0 - 10],
                         [app.widthConst - 20, 0 - 50, app.widthConst + 20, 0 - 10]
                 ]
+                app.structures += [
+                                                [1.5 * app.width // 3, 0.75 * app.height // 3, 1.5* app.width //3 +20, 0.75 * app.height // 2],
+                                                ]
         if app.level == 3 and app.levelChange:
                 app.levelChange = False
                 app.pigLoc = [
@@ -147,13 +181,14 @@ def timerFired(app):
 
         #makes pigs fall as long as they don't touch the structures
         for i in range(len(app.pigLoc)):
-                if (app.pigLoc[i][3] < app.heightConst + 10):
-                        app.pigLoc[i][1] += 5
-                        app.pigLoc[i][3] += 5
+                        if (app.pigLoc[i][3] < app.heightConst + 10):
+                                app.pigLoc[i][1] += 15
+                                app.pigLoc[i][3] += 15
 
         # checks if bird is in area of the pig circles
         for i in range(len(app.pigLoc)):
-                if (app.pigLoc[i][0] < app.birdX < app.pigLoc[i][2]) and (app.pigLoc[i][1] < app.birdY < app.pigLoc[i][3]):
+                if ((app.pigLoc[i][0] < (app.birdX + 5 or app.birdX - 5) < app.pigLoc[i][2])
+                and ((app.pigLoc[i][1] < (app.birdY + 5 or app.birdY - 5) < app.pigLoc[i][3]))):
                         app.levelScore += 1
                         app.totalScore += 1
                         app.pigLoc.pop(i)
