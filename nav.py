@@ -1,4 +1,4 @@
-import other
+import other, game
 
 def default1(app):
         app.splashScreen, app.showScore, app.startGame, app.buildLevel, app.openLevel = False, False, False, False, False
@@ -67,6 +67,7 @@ def nav(app, event, delivery):
 
 def gameNavScreen(app, canvas, w, h):
         #* this is for further gui expansion with options to play a pre-built level, build your own, and open a saved level
+
         canvas.create_text(w // 2, h // 4, text='Play Game', font='PressStart2P 24', fill='black')
         other.round_rectangle(canvas, (w // 4) - 2, (h // 3) + 56, (3 * w// 4) -2, (h // 3) + 96, fill='light slate gray', outline='light slate gray')
         other.round_rectangle(canvas, (w // 4) - 4, (h // 3) + 108, (2 * w// 4) -4, (h // 3) + 148, fill='light slate gray', outline='light slate gray')
@@ -79,12 +80,16 @@ def gameNavScreen(app, canvas, w, h):
         canvas.create_text(w // 2, (h // 3) + 72, text='Play Pre-Built(p)', font='PressStart2P 15', fill='#424242')
         canvas.create_text(3 * w // 8, (h // 3) + 124, text='Build(b)', font='PressStart2P 15', fill='#424242')
         canvas.create_text(5 * w // 8, (h // 3) + 124, text='Open(o)', font='PressStart2P 15', fill='#424242')
+        canvas.create_text(w - 90, h - 20, text='instructions(i)', font='PressStart2P 10', fill='#424242')
+
+        if app.gameInstruct == True:
+                game.instruct(app, canvas)
 
 def gameNav(app, event, delivery):
         h = app.height
         w = app.width
 
-        if delivery == 'mouse':
+        if delivery == 'mouse' and not app.gameInstruct:
                 if not app.splashScreen and (20 < event.x < 110) and (20 < event.y < 60): #this takes you back home
                        default3(app)
                        print('back home')
@@ -100,7 +105,9 @@ def gameNav(app, event, delivery):
                         default4(app)
                         app.openLevel = True
                         print('open level')
-        elif delivery == 'key':
+                elif (event.x > w - 170) and (event.y > h - 30): #this opens the instructions pop-up
+                        app.gameInstruct = True
+        elif delivery == 'key' and not app.gameInstruct:
                 if event.key == 'h':
                         default3(app)
                         print('back home')
@@ -116,3 +123,9 @@ def gameNav(app, event, delivery):
                         default4(app)
                         app.openLevel = True
                         print('open level')
+                elif event.key == 'i':
+                        app.gameInstruct = True
+        else:
+                if app.gameInstruct and event.key:
+                        app.gameInstruct = False
+                        print('hide instructions')

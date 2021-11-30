@@ -8,16 +8,10 @@ from cmu_112_graphics import *
         # * asterisk makes it green
         # BUG makes first word pink
 
-#altered version from 15-112 homeworks found on cs.cmu.edu/~112
-import decimal
-def roundHalfDown(d):
-        # Round to nearest with ties going towards from zero.
-        rounding = decimal.ROUND_HALF_DOWN
-        # See other rounding options here:
-        # https://docs.python.org/3/library/decimal.html#rounding-modes
-        return int(decimal.Decimal(d).to_integral_value(rounding=rounding))
 
 def appStarted(app):
+                app.widthConst = 2 * app.width // 3
+                app.heightConst = app.height // 2
         #load images
                 #all images of clouds drawn by me in photoshop
                 clouds = ['images/cloud1.png', 'images/cloud2.png', 'images/cloud3.png', 'images/cloud4.png']
@@ -30,28 +24,35 @@ def appStarted(app):
                 app.cloud3X, app.cloud3Y = -10, 400
                 app.cloud4X, app.cloud4Y = 150, 100
 
-                #all of these images are also made by me in photoshop
-                # app.pig = app.loadImage('images/pig.png')
-                app.pigLoc = [
-                        [2 * app.width // 3 - 40, app.height //2 - 40, 2 * app.width // 3 + 40, app.height //2 + 40],
+                app.totalScore, app.levelScore, app.level = 0, 0, 0
+                app.structures = [
+                        [app.width // 2, app.heightConst + 20, app.widthConst + 120, app.heightConst + 10]
                 ]
+
+                if app.level == 0:
+                        app.pigLoc = []
+
 
 	# These variables used more globally
                 app.splashScreen = True
                 app.gameScreen = False
                 app.showScore = False
                 app.instruct = False
+                app.gameInstruct = False
                 app.activeSplash = True
                 app.startGame = False
                 app.build = False
                 app.openLevel = False
                 app.move = True
+                app.levelChange = False
+                app.endScreen = False
 
+                app.scoreMultiplier = 1
                 app.timerDelay = 35
 
         # X and Y position at different points and different situations
                 app.birdX = (app.width // 5) - 15
-                app.birdY = app.height // 2
+                app.birdY = app.heightConst
 
                 app.birdXClicked = 0
                 app.birdYClicked = 0
@@ -61,17 +62,6 @@ def appStarted(app):
 
                 app.angleFired = 0
 
-
-        # ? variables not used atm (can be collapsed)
-                # #other stuff for game.py
-                # app.birdTypes = {'normal': 1, 'bomb': 2, 'split': 1.5, 'speed': 2, 'big': 3}
-                # app.structureTypes = {'sm-sq': 2, 'md-sq': 3, 'lg-sq': 4, 'sm-rect': 2, 'md-rect': 3, 'sm-tri': 2, 'md-tri': 3}
-                # app.structureMaterials = {'wood': 1, 'stone': 2, 'glass': 1.5}
-
-                # # These variable used in game.py
-                # app.totalScore, app.levelScore, app.level = 0, 0, 0
-                # app.birdsInLevel = game.birdGeneration(app.level, app.birdTypes)
-                # app.obstaclesList = game.obstacleGeneration(app.level, app.structureTypes, app.structureMaterials)
 
 def keyPressed(app, event):
         if app.gameScreen == True:
@@ -88,31 +78,80 @@ def mousePressed(app, event):
                 nav.nav(app, event, 'mouse')
 
 def mouseDragged(app, event):
-        app.move = False
+        if app.startGame:
+                app.move = False
         app.birdX = event.x
         app.birdY = event.y
 
 def mouseReleased(app, event):
-        app.move = True
+        if app.startGame:
+                app.move = True
         app.birdXReleased = event.x
         app.birdYReleased = event.y
-        app.angleFired = roundHalfDown(app.birdYClicked-app.birdYReleased)
+        app.angleFired = other.roundHalfDown(app.birdYClicked-app.birdYReleased)
 
 def timerFired(app):
-        #* physics of launching bird
+
+        if app.startGame and app.level <= 4:
+                app.scoreMultiplier += app.timerDelay*10
+
+        if app.pigLoc == []:
+                if app.level > 4:
+                        app.endScreen = True
+                        app.levelChange = False
+                elif app.level <= 4:
+                        app.levelChange = True
+                        app.level += 1
+                        app.levelScore = 0
+
+        if app.level == 1 and app.levelChange:
+                app.levelChange = False
+                app.pigLoc = [
+                        [app.widthConst + 40, 0 - 50, app.widthConst + 80, 0 - 10],
+                        [app.widthConst - 80, 0 - 50, app.widthConst - 40, 0 - 10],
+                        [app.widthConst - 20, 0 - 50, app.widthConst + 20, 0 - 10],
+                        [app.widthConst - 50, 0 - 90, app.widthConst - 10, 0 - 50],
+                        [app.widthConst + 10, 0 - 90, app.widthConst + 50, 0 - 50]
+                ]
+
+        if app.level == 2  and app.levelChange:
+                app.levelChange = False
+                app.pigLoc = [
+                        [app.widthConst + 40, 0 - 50, app.widthConst + 80, 0 - 10],
+                        [app.widthConst - 80, 0 - 50, app.widthConst - 40, 0 - 10],
+                        [app.widthConst - 20, 0 - 50, app.widthConst + 20, 0 - 10]
+                ]
+
         if app.birdX < app.width and app.birdX > 0 and app.birdY > 0 and (app.birdY + 10 ) < (2 * app.height // 3) and app.move:
                 game.launcher(app)
 
-        #check if bird is in area of the pig circle
-        if  app.pigLoc != [] and app.pigLoc[0][0]< app.birdX < app.pigLoc[0][2] and app.pigLoc[0][1]< app.birdY < app.pigLoc[0][3]:
-                app.pigLoc.pop()
+        print(app.level)
 
+        #makes pigs fall as long as they don't touch the structures
+        for i in range(len(app.pigLoc)):
+                if app.pigLoc[i][3] < app.heightConst + 10:
+                        app.pigLoc[i][1] += 5
+                        app.pigLoc[i][3] += 5
 
-        app.cloud1X += 1
-        app.cloud2X += 0.75
-        app.cloud3X += 0.5
-        app.cloud4X += 0.5
-        # TODO reset clouds to start at width = 0
+        # checks if bird is in area of the pig circles
+        for i in range(len(app.pigLoc)):
+                if (app.pigLoc[i][0] < app.birdX < app.pigLoc[i][2]) and (app.pigLoc[i][1] < app.birdY < app.pigLoc[i][3]):
+                        app.levelScore += 1
+                        app.totalScore += 1
+                        app.pigLoc.pop(i)
+                        break
+        
+        #random amount that the clouds move from left to right
+        app.cloud1X += random.uniform(0.8,1.2)
+        app.cloud2X += random.uniform(0.25,0.75)
+        app.cloud3X += random.uniform(0.5,1)
+        app.cloud4X += random.uniform(0.5,0.75)
+        #if the clouds are 100 to the right of the width of the window, then the cloud moves back to the left 
+        if app.cloud1X - 100 > app.width: app.cloud1X = -100
+        if app.cloud2X - 100 > app.width: app.cloud2X = -100
+        if app.cloud3X - 100 > app.width: app.cloud3X = -100
+        if app.cloud4X - 100 > app.width: app.cloud4X = -100
+
 
 def redrawAll(app, canvas):
         h = app.height
@@ -124,15 +163,18 @@ def redrawAll(app, canvas):
         canvas.create_image(app.cloud3X, app.cloud3Y, image=ImageTk.PhotoImage(app.cloud3))
         canvas.create_image(app.cloud4X, app.cloud4Y, image=ImageTk.PhotoImage(app.cloud4))
 
+        if app.endScreen:
+                canvas.create_rectangle(0, 0, w, h, fill='deep sky blue')
+                intro.finishedLevels(app, canvas, w, h)
+
         if app.splashScreen:
                 intro.splashScreen(app, canvas, app.activeSplash)
                 if app.instruct == True:
-                        other.round_rectangle(canvas, w // 6, h // 6, 5 * w // 6, 5 * h // 6, fill='#E5E9EE', outline='#E5E9EE')
                         intro.instruct(app, canvas)
         if not app.splashScreen:
                 other.round_rectangle(canvas, 17, 23, 107, 63,  fill='light slate gray', outline='light slate gray')
                 other.round_rectangle(canvas, 20, 20, 110, 60,  fill='#E5E9EE', outline='#E5E9EE')
-                #this font from: https://fonts.google.comapp.timerDelay * /specimen/Press+Start+2P
+                #this font from: https://fonts.google.com/specimen/Press+Start+2P
                 canvas.create_text(65, 40, text='∆(h)', font='PressStart2P 15', fill='#424242')
                 if app.gameScreen:
                         nav.gameNavScreen(app, canvas, w, h)
@@ -144,5 +186,6 @@ def redrawAll(app, canvas):
                         game.build(app, canvas, w, h)
                 elif app.openLevel:
                         game.openLevel(app, canvas, w, h)
+
 
 runApp(width=700, height=500)
