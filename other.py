@@ -1,4 +1,3 @@
-import math, random
 from cmu_112_graphics import *
 
 # from https://codingshiksha.com/python/python-3-tkinter-drawing-rectangle-with-rounded-corners-on-canvas-window-gui-desktop-app-full-project-for-beginners/
@@ -21,11 +20,8 @@ def roundHalfDown(d):
 
 def gameNotActive(app):
                 app.totalScore, app.levelScore, app.level = 0, 0, 0
-                app.structures = [
-                        [app.width // 2, app.heightConst + 20, app.widthConst + 120, app.heightConst + 10]
-                ]
-                if app.level == 0:
-                        app.pigLoc = []
+                app.structures = []
+                app.pigLoc = []
                 app.username = ''
 
 	# These variables used more globally
@@ -33,12 +29,13 @@ def gameNotActive(app):
                 app.move = True
                 app.levelChange = False
                 app.endScreen = False
+                app.buildLevel = False
                 app.scoreMultiplier = 1
                 app.timerDelay = 35
 
         # X and Y position at different points and different situations
-                app.birdX = (app.width // 5) - 15
-                app.birdY = app.heightConst
+                app.birdX = app.width // 8
+                app.birdY = 1.5 * app.height // 4
                 app.birdXClicked = 0
                 app.birdYClicked = 0
                 app.birdXReleased = 0

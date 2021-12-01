@@ -1,41 +1,39 @@
 import other, game
 
-def default1(app):
+def default1(app): #default when we want to show the game menu
         app.splashScreen, app.showScore, app.startGame, app.buildLevel, app.openLevel = False, False, False, False, False
         app.gameScreen = True
 
-def default2(app):
+def default2(app): #default when we want to show the scoreboard
         app.splashScreen, app.gameScreen, app.startGame, app.buildLevel, app.openLevel = False, False, False, False, False
         app.showScore = True
 
-def default3(app):
+def default3(app): #default when we want to show the main menu
         app.showScore, app.gameScreen, app.startGame, app.buildLevel, app.openLevel = False, False, False, False, False
         app.splashScreen = True
+        app.ballMove = False
 
-def default4(app):
+def default4(app): #default when we don't want to show any menus or the scoreboard
         app.splashScreen, app.gameScreen, app.showScore = False, False, False
 
+#navigation for pages that aren't gameplay or level build
 def nav(app, event, delivery):
         h = app.height
         w = app.width
 
         if delivery == 'mouse':
-                h = app.height
-                w = app.width
                 if event.x and app.instruct:
                         app.instruct = not app.instruct
-                elif (app.splashScreen):
+                elif (20 < event.x < 110) and (20 < event.y < 60): #takes you back home
+                        default3(app)
+                elif app.splashScreen:
                         if (w // 3 < event.x < 2 * w // 3) and ((h // 3) + 50 < event.y < (h // 3) + 90)  and not app.instruct: #this opens up the game menu
                                 default1(app)
                         elif (w // 3 < event.x < 2 * w // 3) and ((h // 3) + 100 < event.y < (h // 3) + 140) and not app.instruct: #this opens up the scores page
                                 default2(app)
                         elif (event.x > w - 170) and (event.y > h - 30): #this opens the instructions pop-up
                                 app.instruct = True
-
-                if (not app.splashScreen):
-                        if (20 < event.x < 110) and (20 < event.y < 60): #takes you back home
-                                default3(app)
-
+                        
         elif delivery == 'key':
                 if app.splashScreen and not app.instruct:
                         if event.key == 'p':
@@ -47,11 +45,76 @@ def nav(app, event, delivery):
                 else:
                         if app.instruct and event.key:
                                 app.instruct = False
-                        if event.key == 'h':
+                        elif event.key == 'h':
                                 default3(app)
 
+def gameNav(app, event, delivery):
+        h = app.height
+        w = app.width
+
+        if delivery == 'mouse':
+                if event.x and app.gameInstruct:
+                        app.gameInstruct = False
+                elif (20 < event.x < 110) and (20 < event.y < 60): #takes you back home
+                        default3(app)
+                elif app.buildLevel:
+                        if (140 < event.x < 243) and (20 < event.y < 63):
+                                game.saveLevel(app)
+                        elif (263 < event.x < 366) and (20 < event.y < 63):
+                                app.stuff.pop()
+                        elif (4 * app.width // 16 - 30 < event.x < 4 * app.width // 16 + 10) and (3.5 * app.height // 4 - 30 < event.y < 3.5 * app.height // 4 + 10):
+                                app.curPiece = 'smallPig'
+                                print('small')
+                        elif (6 * app.width // 16 - 50 < event.x < 6 * app.width // 16 + 30) and (3.5 * app.height // 4 - 50 < event.y < 3.5 * app.height // 4 + 30):
+                                app.curPiece = 'bigPig'
+                                print('big')
+                        elif (8 * app.width // 16 - 30 < event.x <  8 * app.width // 16 + 150) and (3.5 * app.height // 4 - 15 < event.y< 3.5 * app.height // 4 + 10):
+                                app.curPiece = 'longStruct'
+                                print('long')
+                        elif (12.5 * app.width // 16 - 10 < event.x <  12.5 * app.width // 16 + 10) and (3 * app.height // 4 + 15 < event.y < app.height - 35):
+                                app.curPiece = 'shortStruct'
+                                print('short')
+                elif app.buildLevel == False:
+                        if ((w // 4) - 2 < event.x <  (3 * w// 4) + 2) and ((h // 3) + 52 < event.y < (h // 3) + 96): #this is for play pre-built game
+                                default4(app)
+                                app.gameMode = 'pre'
+                                app.startGame = True
+                        elif ((w // 4) -2 < event.x < (2 * w// 4)) and ((h // 3) + 104 < event.y < (h // 3) + 148): #this is for build
+                                default4(app)
+                                app.buildLevel = True
+                        elif ((2 * w // 4) - 4 < event.x < (3 * w// 4) +4) and ((h // 3) + 104 < event.y < (h // 3) + 148): #this is for open level
+                                default4(app)
+                                app.openFilename = app.getUserInput('what filename would you like to open (must be exact, also include .csv)')
+                                app.gameMode = 'user'
+                        elif (event.x > w - 170) and (event.y > h - 30): #this opens the instructions pop-up
+                                app.gameInstruct = True
+        elif delivery == 'key':
+                if app.gameInstruct and event.key:
+                        app.gameInstruct = False
+                elif app.buildLevel:
+                        if event.key == 's':
+                                game.saveLevel(app)
+                        elif event.key == 'u' and len(app.stuff) > 0:
+                                app.stuff.pop()
+                elif app.buildLevel == False:
+                        if event.key == 'h':
+                                default3(app)
+                        elif event.key == 'p':
+                                default4(app)
+                                app.gameMode = 'pre'
+                                app.startGame = True
+                        elif event.key == 'b':
+                                default4(app)
+                                app.buildLevel = True
+                        elif event.key == 'o':
+                                default4(app)
+                                app.openFilename = app.getUserInput('what filename would you like to open (must be exact, also include .csv)')
+                                app.gameMode = 'user'
+                        elif event.key == 'i':
+                                app.gameInstruct = True
+
 def gameNavScreen(app, canvas, w, h):
-        #* this is for further gui expansion with options to play a pre-built level, build your own, and open a saved level
+        #this creates all the buttons on the game navigation menu
         #this font from: https://fonts.google.com/specimen/Press+Start+2P
         canvas.create_text(w // 2, h // 4, text='Play Game', font='PressStart2P 24', fill='black')
         other.round_rectangle(canvas, (w // 4) - 2, (h // 3) + 56, (3 * w// 4) -2, (h // 3) + 96, fill='light slate gray', outline='light slate gray')
@@ -68,66 +131,6 @@ def gameNavScreen(app, canvas, w, h):
         canvas.create_text(5 * w // 8, (h // 3) + 124, text='Open(o)', font='PressStart2P 15', fill='#424242')
         canvas.create_text(w - 90, h - 20, text='instructions(i)', font='PressStart2P 10', fill='#424242')
 
+        #this shows the instructions if prompted
         if app.gameInstruct == True:
                 game.instruct(app, canvas)
-
-def gameNav(app, event, delivery):
-        h = app.height
-        w = app.width
-
-        if delivery == 'mouse':
-                if event.x and app.gameInstruct:
-                        app.gameInstruct = False
-                elif app.buildLevel:
-                        if (140 < event.x < 243) and (20 < event.y < 63):
-                                game.saveLevel(app)
-                        if (263 < event.x < 366) and (20 < event.y < 63):
-                                app.stuff.pop()
-                        elif (4 * app.width // 16 - 30 < event.x < 4 * app.width // 16 + 10) and (3.5 * app.height // 4 - 30 < event.y < 3.5 * app.height // 4 + 10):
-                                app.curPiece = 'smallPig'
-                                print('small')
-                        elif (6 * app.width // 16 - 50 < event.x < 6 * app.width // 16 + 30) and (3.5 * app.height // 4 - 50 < event.y < 3.5 * app.height // 4 + 30):
-                                app.curPiece = 'bigPig'
-                                print('big')
-                        elif (8 * app.width // 16 - 30 < event.x <  8 * app.width // 16 + 150) and (3.5 * app.height // 4 - 15 < event.y< 3.5 * app.height // 4 + 10):
-                                app.curPiece = 'longStruct'
-                                print('long')
-                        elif (12.5 * app.width // 16 - 10 < event.x <  12.5 * app.width // 16 + 10) and (3 * app.height // 4 + 15 < event.y < app.height - 35):
-                                app.curPiece = 'shortStruct'
-                                print('short')
-                elif app.buildLevel == False:
-                        if not app.splashScreen and (20 < event.x < 110) and (20 < event.y < 60): #this takes you back home
-                                default3(app)
-                        elif ((w // 4) - 2 < event.x <  (3 * w// 4) + 2) and ((h // 3) + 52 < event.y < (h // 3) + 96): #this is for play pre-built game
-                                default4(app)
-                                app.startGame = True
-                        elif ((w // 4) -2 < event.x < (2 * w// 4)) and ((h // 3) + 104 < event.y < (h // 3) + 148): #this is for build
-                                default4(app)
-                                app.buildLevel = True
-                        elif ((2 * w // 4) - 4 < event.x < (3 * w// 4) +4) and ((h // 3) + 104 < event.y < (h // 3) + 148): #this is for open level
-                                default4(app)
-                                app.openLevel = True
-                        elif (event.x > w - 170) and (event.y > h - 30): #this opens the instructions pop-up
-                                app.gameInstruct = True
-        elif delivery == 'key':
-                if app.gameInstruct and event.key:
-                        app.gameInstruct = False
-                elif app.buildLevel:
-                        if event.key == 's':
-                                game.saveLevel(app)
-                        elif event.key == 'u' and len(app.stuff) > 0:
-                                app.stuff.pop()
-                elif app.buildLevel == False:
-                        if event.key == 'h':
-                                default3(app)
-                        elif event.key == 'p':
-                                default4(app)
-                                app.startGame = True
-                        elif event.key == 'b':
-                                default4(app)
-                                app.buildLevel = True
-                        elif event.key == 'o':
-                                default4(app)
-                                app.openLevel = True
-                        elif event.key == 'i':
-                                app.gameInstruct = True
