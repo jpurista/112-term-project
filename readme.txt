@@ -20,7 +20,7 @@ Run the Project:
 
 Libraries and Files:
         - I did not use any libraries that were not used in the 15-112 course at some point
-                - I used math, random, and cmu_112_graphics in various places
+                - I used math, random, decimal, copy, and cmu_112_graphics in various places
         - In terms of files read, written, created, and interpreted
                 - All of the Python files are linked to each other in one way or another through importing them
                         -ex: import game, other, nav

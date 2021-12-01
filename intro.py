@@ -1,4 +1,11 @@
 import other
+'''
+this contains several functions present on the splashscreen such as:
+        - start
+                - creates the nav menu on the start/splash screen
+        - instruct
+                - shows instructions for navigating through the pages
+'''
 
 def splashScreen(app, canvas, active, w, h):
         if active: 

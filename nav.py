@@ -1,4 +1,7 @@
 import other, game
+'''
+this file contains functions that control user navigation through the game
+'''
 
 def default1(app): #default when we want to show the game menu
         app.splashScreen, app.showScore, app.startGame, app.buildLevel, app.openLevel = False, False, False, False, False

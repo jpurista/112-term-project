@@ -1,6 +1,19 @@
 import math
 import other, nav
 from cmu_112_graphics import *
+'''
+this file contains the basis for the actual code such as:
+        - startup of different modes
+                - start, build
+        - read/write/interpret csv files for user-built levels
+                - saveLevel, openLevel, redrawCustom, runLevel
+        - manage level progression for pre-built levels
+                - levelBuildSwitch
+        - show instructions
+                - instruct
+        - manage movement of the bird projectile
+                - launcher
+'''
 
 def start(app, canvas, w, h):
         other.round_rectangle(canvas, 45, 75, app.width//6 + 30, 2*app.height//3 - 15, fill='light sky blue')
@@ -73,18 +86,11 @@ def launcher(app):
                         multiplier = -1
                 if app.angleFired <= 8:
                         app.angleFired /= 1.05
-                for struct in app.structures:
-                        # TODO check if the bird is touching the structures... if they are, then stop or bounce
-                                if ((struct[0] < app.birdX and struct[3] < app.birdY) or  #bottom middle right
-                                        (struct[0] > app.birdX and struct[3] < app.birdY) or #bottom left
-                                        (struct[0] > app.birdX and struct[3] > app.birdY or # left top middle
-                                        (struct[0] > app.birdX and struct[1] > app.birdY))
-                                        ):
-                                                app.birdX += 0.4 * app.timerDelay
-                                                if app.angleFired < 0:
-                                                        app.birdY += multiplier * math.sqrt(0.25 * app.timerDelay * abs(app.angleFired))
-                                                else:
-                                                        app.birdY -= multiplier * math.sqrt(0.25 * app.timerDelay * app.angleFired)
+                app.birdX += 5
+                if app.angleFired < 0:
+                        app.birdY += multiplier * math.sqrt(abs(app.angleFired))
+                else:
+                        app.birdY -= multiplier * math.sqrt(app.angleFired)
 
 def instruct(app, canvas):
         w = app.width

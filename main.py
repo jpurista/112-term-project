@@ -1,85 +1,101 @@
 import random
 import other, intro, game, scores, nav
 from cmu_112_graphics import *
+'''
+this file is the main file for the whole game
+it links to all the other files in a (kind of) organized way and manages how they interact with eachother
+        - appStarted
+                -keeps track of global variables
+        - keyPressed, mousePressed, mouseDragged, mouseReleased
+                - these track user input for things such as
+                        - keystrokes for navigation and naming file
+                        - mouse clicks for navigation, actual gameplay, and level creation
+        - timerFired
+                - functions that are called on constantly
+                - refers to other files for some functions like game.launcher
+        - redrawAll
+                - draws everything through canvas
+
+## refered to in other places, but all images are created by me in photoshop or through tkinter
+## however, the font used is from google fonts https://fonts.google.com/specimen/Press+Start+2P
+'''
 
 def appStarted(app):
-                app.widthConst = 2 * app.width // 3
-                app.heightConst = app.height // 2
-        #load images
-                #all images of clouds drawn by me in photoshop
-                clouds = ['images/cloud1.png', 'images/cloud2.png', 'images/cloud3.png', 'images/cloud4.png']
-                app.cloud1 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
-                app.cloud2 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
-                app.cloud3 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
-                app.cloud4 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
-                app.cloud1X, app.cloud1Y = 550, 150
-                app.cloud2X, app.cloud2Y = 200, 250
-                app.cloud3X, app.cloud3Y = -10, 400
-                app.cloud4X, app.cloud4Y = 150, 100
+        app.widthConst = 2 * app.width // 3
+        app.heightConst = app.height // 2
+#load images
+        #all images of clouds drawn by me in photoshop
+        clouds = ['images/cloud1.png', 'images/cloud2.png', 'images/cloud3.png', 'images/cloud4.png']
+        app.cloud1 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
+        app.cloud2 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
+        app.cloud3 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
+        app.cloud4 = app.scaleImage(app.loadImage(clouds[random.randint(0,3)]), 6)
+        app.cloud1X, app.cloud1Y = 550, 150
+        app.cloud2X, app.cloud2Y = 200, 250
+        app.cloud3X, app.cloud3Y = -10, 400
+        app.cloud4X, app.cloud4Y = 150, 100
 
-	# These variables used more globally
-                #this reades the scores on the scores.csv files
-                app.results = scores.readScores()
-                #these jump from start to game menu to score page
-                app.splashScreen = True
-                app.gameScreen = False
-                app.showScore = False
-                #these show instructions on start and game menu
-                app.instruct = False
-                app.gameInstruct = False
-                #these are the actions available on the game menu
-                app.buildLevel = False
-                app.startGame = False
-                app.openLevel = False
-                app.gameMode = ''
-                #this controls the different timing actions in the game
-                app.end = False
-                app.levelChange = False
-                app.endScreen = False
-                app.birdType = 'red'
+# These variables used more globally
+        #this reades the scores on the scores.csv files
+        app.results = scores.readScores()
+        #these jump from start to game menu to score page
+        app.splashScreen = True
+        app.gameScreen = False
+        app.showScore = False
+        #these show instructions on start and game menu
+        app.instruct = False
+        app.gameInstruct = False
+        #these are the actions available on the game menu
+        app.buildLevel = False
+        app.startGame = False
+        app.openLevel = False
+        app.gameMode = ''
+        #this controls the different timing actions in the game
+        app.end = False
+        app.levelChange = False
+        app.endScreen = False
+        app.birdType = 'red'
 
-        # this stuff is for the level editor/builder
-                #this checks which piece we want to add
-                app.curPiece = ''
-                #this tracks the current X and Y of the piece we have selected
-                app.curPieceX = -100
-                app.curPieceY = -100
-                #this tracks the X and Y of the piece where we released it
-                app.curPieceXReleased = -1
-                app.curPieceYReleased = -1
-                #these lists keep track of pigs and structures (respectively) that were added to the user-built level
-                app.buildPigLoc = []
-                app.buildStructures = []
-                app.released = False
-                app.openFilename = ''
-                app.curFileName = ''
-                app.ballMove = False
-                app.lastPiece = []
+# this stuff is for the level editor/builder
+        #this checks which piece we want to add
+        app.curPiece = ''
+        #this tracks the current X and Y of the piece we have selected
+        app.curPieceX = -100
+        app.curPieceY = -100
+        #this tracks the X and Y of the piece where we released it
+        app.curPieceXReleased = -1
+        app.curPieceYReleased = -1
+        #these lists keep track of pigs and structures (respectively) that were added to the user-built level
+        app.buildPigLoc = []
+        app.buildStructures = []
+        app.released = False
+        app.openFilename = ''
+        app.curFileName = ''
+        app.ballMove = False
+        app.lastPiece = []
 
-        # X and Y position at different points and different situations
-                #these track the curent X and Y of the bird so that it is redrawn in the correct place
-                app.birdX = 0
-                app.birdY = 0
-                #these track where we started and released the bird to caluclate the angle
-                app.birdXClicked = 0
-                app.birdYClicked = 0
-                app.birdXReleased = 0
-                app.birdYReleased = 0
-                #this is where the angle is stored based on the previous information in the lines above
-                app.angleFired = 0
+# X and Y position at different points and different situations
+        #these track the curent X and Y of the bird so that it is redrawn in the correct place
+        app.birdX = 0
+        app.birdY = 0
+        #these track where we started and released the bird to caluclate the angle
+        app.birdXClicked = 0
+        app.birdYClicked = 0
+        app.birdXReleased = 0
+        app.birdYReleased = 0
+        #this is where the angle is stored based on the previous information in the lines above
+        app.angleFired = 0
 
-        #these are other random variables that I couldnt group into the other categories
-                #this is multiplied by the score at the end of the gameScreen
-                #it keeps track of time it took to play the game, so longer time is higher score... players want low scores
-                app.scoreMultiplier = 1
-                #this is just the timer delay... 35 seemed to be pretty smooth and I felt it was fairly reasonable
-                app.timerDelay = 38
-                #These are the default starting values
-                app.totalScore, app.levelScore, app.level = 0, 0, 0
-                app.pigLoc = []
-                app.structures = []
-                #username stored when the player finished playing pre-built leveles
-                app.username = ''
+#these are other random variables that I couldnt group into the other categories
+        #this is multiplied by the score at the end of the gameScreen
+        #it keeps track of time it took to play the game, so longer time is higher score... players want low scores
+        app.scoreMultiplier = 1
+        #These are the default starting values
+        app.totalScore, app.levelScore, app.level = 0, 0, 0
+        app.pigLoc = []
+        app.structures = []
+        #username stored when the player finished playing pre-built leveles
+        app.username = ''
 
 def keyPressed(app, event):
         #looks for key presses if on the game menu or level builder
@@ -137,7 +153,6 @@ def mouseReleased(app, event):
                 app.curPieceX = -100
                 app.curPieceY = -100
 
-
 def timerFired(app):
         if app.openFilename != '':
                 app.openLevel = True
@@ -155,7 +170,7 @@ def timerFired(app):
 
         #this handles the score multiplier based on time
         if app.startGame and app.level <= 4:
-                app.scoreMultiplier += app.timerDelay*10
+                app.scoreMultiplier += 10
 
         #this will run if there are pigs in the pigLov variable
         if app.pigLoc == []:
@@ -180,10 +195,12 @@ def timerFired(app):
                         other.gameNotActive(app)
                         nav.default3(app)
 
-
         #this calls the function in other.py that changes the levels and
         # contains the code for 4 hard-coded levels
         game.levelBuildSwitch(app)
+
+        #TODO check if the bird is touching the structures... if they are, then stop or bounce
+        
 
         #TODO also add so the angle changes 180-angle if it touches one of the structures
         #this doesn't let the bird outside the bounds of the window
@@ -212,10 +229,10 @@ def timerFired(app):
                                 break
 
         #random amount that the clouds move from left to right
-        app.cloud1X += random.uniform(0.8,1.2)
-        app.cloud2X += random.uniform(0.25,0.75)
-        app.cloud3X += random.uniform(0.5,1)
-        app.cloud4X += random.uniform(0.5,0.75)
+        app.cloud1X += random.uniform(1,2)/2
+        app.cloud2X += random.uniform(1,2)/2
+        app.cloud3X += random.uniform(1,2)/2
+        app.cloud4X += random.uniform(1,2)/2
         #if the clouds are 100 to the right of the width of the window, then the cloud moves back to the left 
         if app.cloud1X - 100 > app.width: app.cloud1X = -100
         if app.cloud2X - 100 > app.width: app.cloud2X = -100

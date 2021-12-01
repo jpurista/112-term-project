@@ -1,4 +1,7 @@
 from cmu_112_graphics import *
+'''
+this file contains other misc functions that I did not think fit very well into the other categories/files
+'''
 
 # from https://codingshiksha.com/python/python-3-tkinter-drawing-rectangle-with-rounded-corners-on-canvas-window-gui-desktop-app-full-project-for-beginners/
 def round_rectangle(canvas, x1, y1, x2, y2, radius=17, **kwargs):
@@ -32,7 +35,7 @@ def gameNotActive(app):
                 app.endScreen = False
                 app.buildLevel = False
                 app.scoreMultiplier = 1
-                app.timerDelay = 35
+                app.timerDelay = 1
 
         # X and Y position at different points and different situations
                 app.birdX = app.width // 8

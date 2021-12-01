@@ -1,4 +1,10 @@
 import copy
+'''
+this file has functions that record, save, and display user scores for the pre-built levels
+i learned more about managing .csv files from w3schools
+https://www.w3schools.com/python/python_file_write.asp
+'''
+
 def show(app, canvas, w, h):
         #this font from: https://fonts.google.com/specimen/Press+Start+2P
         canvas.create_text(w // 2, h // 4, text='Scoreboard', font='PressStart2P 25', fill='black')
@@ -32,7 +38,6 @@ def sortScores(L):
                                 (result[i], result[j]) = (result[j], result[i])
         return result
 
-#got help from https://www.w3schools.com/python/python_file_write.asp for read/write functions
 def writeScores(app, username, score):
         app.results.append((username, score))
         csvFile = open('scores.csv', 'w')
