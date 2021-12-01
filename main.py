@@ -42,6 +42,7 @@ def appStarted(app):
                 app.end = False
                 app.levelChange = False
                 app.endScreen = False
+                app.birdType = 'red'
 
         # this stuff is for the level editor/builder
                 #this checks which piece we want to add

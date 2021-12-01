@@ -4,7 +4,10 @@ from cmu_112_graphics import *
 
 def start(app, canvas, w, h):
         other.round_rectangle(canvas, 45, 75, app.width//6 + 30, 2*app.height//3 - 15, fill='light sky blue')
-        canvas.create_oval(app.birdX-10, app.birdY-10, app.birdX+10, app.birdY+10, fill='red', outline='red')
+        if app.birdType == 'red':
+                canvas.create_oval(app.birdX-10, app.birdY-10, app.birdX+10, app.birdY+10, fill='red', outline='red')
+        if app.birdType == 'bigRed':
+                canvas.create_oval(app.birdX-20, app.birdY-20, app.birdX+20, app.birdY+20, fill='red', outline='red')
         canvas.create_rectangle(0, 2 * h // 3, w, h, fill='green', outline = 'green')
 
         if app.gameMode == 'pre':
@@ -15,7 +18,7 @@ def start(app, canvas, w, h):
                 canvas.create_text(app.width // 2, app.height // 8, text = f'custom level', font='PressStart2P 15', fill='black')
 
         for i in range(len(app.pigLoc)):
-                canvas.create_oval(app.pigLoc[i][0], app.pigLoc[i][1], app.pigLoc[i][2], app.pigLoc[i][3], fill='green', outline='green')
+                other.round_rectangle(canvas,app.pigLoc[i][0], app.pigLoc[i][1], app.pigLoc[i][2], app.pigLoc[i][3], radius = 30,fill='green', outline='green')
         for i in range(len(app.structures)):
                 other.round_rectangle(canvas, app.structures[i][0], app.structures[i][1], app.structures[i][2], app.structures[i][3], fill='gray', outline='dimgray')
 

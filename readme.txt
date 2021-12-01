@@ -30,6 +30,9 @@ Libraries and Files:
 
 Command and Shortcuts:
         - There are not really any secret shortcuts or commands
+                - The only is hitting the 't' key on your keyboard
+                        - this needs to be done when on the game menu, but before you start the game
+                        - this command will create a larger bird, making it a bit easier to complete the built-in levels
         - The user can navigatee through the game with a combination of keystrokes and mouse
                 - Keystrokes are not needed to navigate through the menus, but can be a convenient way to get from page to page
                         - any keystrokes that are needed will be clearly labeled on the button they correspond to

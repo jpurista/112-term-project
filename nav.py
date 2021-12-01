@@ -112,6 +112,11 @@ def gameNav(app, event, delivery):
                                 app.gameMode = 'user'
                         elif event.key == 'i':
                                 app.gameInstruct = True
+                        elif event.key == 't':
+                                if app.birdType == 'red':
+                                        app.birdType = 'bigRed'
+                                else:
+                                        app.birdType = 'red'
 
 def gameNavScreen(app, canvas, w, h):
         #this creates all the buttons on the game navigation menu
