@@ -2,12 +2,6 @@ import random
 import other, intro, game, scores, nav
 from cmu_112_graphics import *
 
-# Comment instructions:
-        # TODO todo makes it orange
-        # ? question mark makes it blue
-        # * asterisk makes it green
-        # BUG makes first word pink
-
 def appStarted(app):
                 app.widthConst = 2 * app.width // 3
                 app.heightConst = app.height // 2
@@ -56,11 +50,11 @@ def appStarted(app):
                 #these lists keep track of pigs and structures (respectively) that were added to the user-built level
                 app.buildPigLoc = []
                 app.buildStructures = []
-                app.stuff = []
                 app.released = False
                 app.openFilename = ''
                 app.curFileName = ''
                 app.ballMove = False
+                app.lastPiece = []
 
         # X and Y position at different points and different situations
                 #these track the curent X and Y of the bird so that it is redrawn in the correct place
@@ -99,10 +93,14 @@ def mousePressed(app, event):
         app.birdXClicked = event.x
         app.birdYClicked = event.y
         #looks for mouse presses if on the game menu or level builder
-        if app.gameScreen == True or app.buildLevel == True:
+        if app.gameScreen == True:
                 nav.gameNav(app, event, 'mouse')
+        elif app.buildLevel == True:
+                nav.gameNav(app, event, 'mouse')
+                app.ballMove = True
         #looks at all other mouse presses
         elif app.startGame == True:
+                nav.gameNav(app, event, 'mouse')
                 app.ballMove = True
         else:
                 nav.nav(app, event, 'mouse')
@@ -119,22 +117,22 @@ def mouseReleased(app, event):
         app.birdXReleased = event.x
         app.birdYReleased = event.y
         #rounds the angle down to the nearest number
-        app.angleFired = other.roundHalfDown(app.birdYClicked-app.birdYReleased)
+        app.angleFired = app.birdYClicked-app.birdYReleased
         #stores the released position if on the level builder and piece is selected
         if app.buildLevel == True and app.curPiece != '':
                 app.curPieceXReleased = event.x
                 app.curPieceYReleased = event.y
 
-                app.stuff.append([app.curPiece, event.x, event.y])
                 if 'smallPig' in app.curPiece:
                         app.buildPigLoc.append([app.curPiece, event.x-20, event.y-20, event.x+20, event.y+20])
                 elif 'bigPig' in app.curPiece:
                         app.buildPigLoc.append([app.curPiece, event.x-40, event.y-40, event.x+40, event.y+40])
                 elif 'longStruct' in app.curPiece:
-                        app.buildStructures.append([app.curPiece, event.x-90, event.y-12.5, event.x+90, event.y+12.5])
+                        app.buildStructures.append([app.curPiece, event.x-90, event.y, event.x+90, event.y+25])
                 elif 'shortStruct' in app.curPiece:
                         app.buildStructures.append([app.curPiece, event.x-12.5, event.y-90, event.x+12.5, event.y+90])
 
+                app.lastPiece.append(app.curPiece)
                 app.curPiece = ''
                 app.curPieceX = -100
                 app.curPieceY = -100
@@ -163,28 +161,25 @@ def timerFired(app):
         if app.pigLoc == []:
                 #series of functions to run if we have finished level 4
                 #will ask user for username, record score to the scoreboard and scores.csv and opens the splash screen again
-                if app.level >= 4 and app.end == True:
-                        app.username = app.getUserInput('What is your username?')
-                        if app.username == None: app.username = ' '
-                        app.showMessage(f'You finished the pre-built levels!\n {app.username}, you scored: {other.roundHalfDown(1/(app.totalScore*(1/app.scoreMultiplier)))}')
-                        scores.writeScores(app, app.username, other.roundHalfDown(1/(app.totalScore*(1/app.scoreMultiplier))))
-                        other.gameNotActive(app)
-                        app.splashScreen = True
-                        app.end = False
-                #this will run if we are on levels 1 to 4
-                elif app.level < 4 and app.end == False:
-                        app.levelScore = 0
-                elif app.level >= 0 and app.levelChange == False:
-                        app.level += 1
-                        app.birdX = app.width // 8
-                        app.birdY = 1.5 * app.height // 4
-                        app.ballMove = False
-                        app.levelChange = True
-                elif app.gameMode == 'user' and app.end == True:
+                if app.gameMode == 'pre':
+                        if app.level >= 4 and app.end == True:
+                                app.username = app.getUserInput('What is your username?')
+                                if app.username == None: app.username = ' '
+                                app.showMessage(f'You finished the pre-built levels!\n {app.username}, you scored: {other.roundHalfDown(1/(app.totalScore*(1/app.scoreMultiplier)))}')
+                                scores.writeScores(app, app.username, other.roundHalfDown(1/(app.totalScore*(1/app.scoreMultiplier))))
+                                other.gameNotActive(app)
+                                nav.default3(app)
+                        elif app.level >= 0 and app.levelChange == False:
+                                app.level += 1
+                                app.birdX = app.width // 8
+                                app.birdY = 1.5 * app.height // 4
+                                app.ballMove = False
+                                app.levelChange = True
+                elif app.gameMode == 'user':
                         app.showMessage(f'Great Job!\nYou completed a user-built level.\n The scores for these are not recorded.')
                         other.gameNotActive(app)
                         nav.default3(app)
-                        app.gameMode = ''
+
 
         #this calls the function in other.py that changes the levels and
         # contains the code for 4 hard-coded levels
@@ -260,4 +255,4 @@ def redrawAll(app, canvas):
                 elif app.openLevel: #opens previously built level that's stored in the userLevels folder
                         game.start(app, canvas, w, h)
 
-runApp(width=700, height=500)
+runApp(width=700, height=500, )

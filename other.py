@@ -23,6 +23,7 @@ def gameNotActive(app):
                 app.structures = []
                 app.pigLoc = []
                 app.username = ''
+                app.gameMode = ''
 
 	# These variables used more globally
                 app.end = False

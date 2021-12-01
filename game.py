@@ -18,7 +18,7 @@ def start(app, canvas, w, h):
                 canvas.create_text(app.width // 2, app.height // 8, text = f'custom level', font='PressStart2P 15', fill='black')
 
         for i in range(len(app.pigLoc)):
-                other.round_rectangle(canvas,app.pigLoc[i][0], app.pigLoc[i][1], app.pigLoc[i][2], app.pigLoc[i][3], radius = 30,fill='green', outline='green')
+                canvas.create_oval(app.pigLoc[i][0], app.pigLoc[i][1], app.pigLoc[i][2], app.pigLoc[i][3], fill='green', outline='green')
         for i in range(len(app.structures)):
                 other.round_rectangle(canvas, app.structures[i][0], app.structures[i][1], app.structures[i][2], app.structures[i][3], fill='gray', outline='dimgray')
 
@@ -39,6 +39,8 @@ def build(app, canvas, w, h):
         other.round_rectangle(canvas, 8 * app.width // 16 - 30, 3.5 * app.height // 4 - 15, 8 * app.width // 16 + 150, 3.5 * app.height // 4 + 10, fill='gray', outline='dimgray') # long structure
         other.round_rectangle(canvas, 12.5 * app.width // 16 - 10, 3 * app.height // 4 + 15, 12.5 * app.width // 16 + 10, app.height - 35,fill='gray', outline='dimgray') #tall structure
 
+        canvas.create_line(50, 2*app.height//3, app.width-50, 2*app.height//3 +5, fill = 'red')
+        canvas.create_text(app.width //2, 2*app.height//3 + 15, text='anything under this line will not show up when played', font='PressStart2P 10', fill='red')
         canvas.create_oval(app.curPieceX-10, app.curPieceY-10, app.curPieceX+10, app.curPieceY+10, fill='purple', outline='red')
         redrawCustom(app, canvas, app.buildPigLoc, app.buildStructures, 'build')
 
@@ -70,14 +72,19 @@ def launcher(app):
                 if app.birdXReleased < app.birdXClicked:
                         multiplier = -1
                 if app.angleFired <= 8:
-                        app.angleFired /= 1.1
-                for j in range(len(app.structures)):
-                        if (app.structures[j][0] -8> app.birdX < app.structures[j][2]+8) or (app.structures[j][1] -8> app.birdY < app.structures[j][3]+8):
-                                        app.birdX += 0.5 * app.timerDelay
-                                        if app.angleFired < 0:
-                                                app.birdY += multiplier * math.sqrt(0.25 * app.timerDelay * abs(app.angleFired))
-                                        else:
-                                                app.birdY -= multiplier * math.sqrt(0.25 * app.timerDelay * app.angleFired)
+                        app.angleFired /= 1.05
+                for struct in app.structures:
+                        # TODO check if the bird is touching the structures... if they are, then stop or bounce
+                                if ((struct[0] < app.birdX and struct[3] < app.birdY) or  #bottom middle right
+                                        (struct[0] > app.birdX and struct[3] < app.birdY) or #bottom left
+                                        (struct[0] > app.birdX and struct[3] > app.birdY or # left top middle
+                                        (struct[0] > app.birdX and struct[1] > app.birdY))
+                                        ):
+                                                app.birdX += 0.4 * app.timerDelay
+                                                if app.angleFired < 0:
+                                                        app.birdY += multiplier * math.sqrt(0.25 * app.timerDelay * abs(app.angleFired))
+                                                else:
+                                                        app.birdY -= multiplier * math.sqrt(0.25 * app.timerDelay * app.angleFired)
 
 def instruct(app, canvas):
         w = app.width
@@ -105,6 +112,7 @@ def saveLevel(app):
         for item in saveThis:
                 userLevel.write(f'{item[0]}, {item[1]}, {item[2]}, {item[3]}, {item[4]}\n')
         userLevel.close()
+        app.showMessage(f'you have successfully saved your file under the name\'{filename}\'.\nTo open/play your level, type \'{filename}\' into the open page.')
         nav.default3(app)
         app.buildPigLoc = []
         app.buildStructures = []
@@ -125,6 +133,7 @@ def openLevel(filename):
 def levelBuildSwitch(app):
         if app.gameMode == 'pre':
                 if app.level == 1 and app.levelChange:
+                        app.levelScore = 0
                         app.levelChange = False
                         app.pigLoc = [
                                         [app.widthConst - 80, 0 - 50, app.widthConst - 40, 0 - 10],#bottom left
@@ -136,6 +145,7 @@ def levelBuildSwitch(app):
                                 ]
                         
                 elif app.level == 2  and app.levelChange:
+                        app.levelScore = 0
                         app.levelChange = False
                         app.pigLoc = [
                                         [app.widthConst - 80, - 50, app.widthConst - 40, - 10],#bottom left
@@ -149,6 +159,7 @@ def levelBuildSwitch(app):
                                 ]
                                 
                 elif app.level == 3 and app.levelChange:
+                        app.levelScore = 0
                         app.levelChange = False
                         app.pigLoc = [
                                         [app.widthConst - 80, app.height//4 - 40, app.widthConst - 40, app.height//4],#bottom left
@@ -164,6 +175,7 @@ def levelBuildSwitch(app):
                                 ]
 
                 elif app.level == 4 and app.levelChange:
+                        app.levelScore = 0
                         app.levelChange = False
                         app.pigLoc = [
                                         [app.widthConst - 80, app.height//4 - 40, app.widthConst - 40, app.height//4],#bottom left

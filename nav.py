@@ -26,6 +26,7 @@ def nav(app, event, delivery):
                         app.instruct = not app.instruct
                 elif (20 < event.x < 110) and (20 < event.y < 60): #takes you back home
                         default3(app)
+                        other.gameNotActive(app)
                 elif app.splashScreen:
                         if (w // 3 < event.x < 2 * w // 3) and ((h // 3) + 50 < event.y < (h // 3) + 90)  and not app.instruct: #this opens up the game menu
                                 default1(app)
@@ -47,6 +48,7 @@ def nav(app, event, delivery):
                                 app.instruct = False
                         elif event.key == 'h':
                                 default3(app)
+                                other.gameNotActive(app)
 
 def gameNav(app, event, delivery):
         h = app.height
@@ -57,11 +59,17 @@ def gameNav(app, event, delivery):
                         app.gameInstruct = False
                 elif (20 < event.x < 110) and (20 < event.y < 60): #takes you back home
                         default3(app)
+                        other.gameNotActive(app)
                 elif app.buildLevel:
                         if (140 < event.x < 243) and (20 < event.y < 63):
                                 game.saveLevel(app)
-                        elif (263 < event.x < 366) and (20 < event.y < 63):
-                                app.stuff.pop()
+                        elif (263 < event.x < 366) and (20 < event.y < 63) and app.lastPiece != []:
+                                if 'Pig' in app.lastPiece[-1] and app.buildPigLoc != []:
+                                        app.buildPigLoc.pop()
+                                        app.lastPiece.pop()
+                                elif 'Struct' in app.lastPiece[-1] and app.buildStructures != []:
+                                        app.buildStructures.pop()
+                                        app.lastPiece.pop()
                         elif (4 * app.width // 16 - 30 < event.x < 4 * app.width // 16 + 10) and (3.5 * app.height // 4 - 30 < event.y < 3.5 * app.height // 4 + 10):
                                 app.curPiece = 'smallPig'
                                 print('small')
@@ -86,6 +94,7 @@ def gameNav(app, event, delivery):
                                 default4(app)
                                 app.openFilename = app.getUserInput('what filename would you like to open (must be exact, also include .csv)')
                                 app.gameMode = 'user'
+                                app.startGame = True
                         elif (event.x > w - 170) and (event.y > h - 30): #this opens the instructions pop-up
                                 app.gameInstruct = True
         elif delivery == 'key':
@@ -94,11 +103,17 @@ def gameNav(app, event, delivery):
                 elif app.buildLevel:
                         if event.key == 's':
                                 game.saveLevel(app)
-                        elif event.key == 'u' and len(app.stuff) > 0:
-                                app.stuff.pop()
+                        elif event.key == 'u' and app.lastPiece != []:
+                                if 'Pig' in app.lastPiece[-1] and app.buildPigLoc != []:
+                                        app.buildPigLoc.pop()
+                                        app.lastPiece.pop()
+                                elif 'Struct' in app.lastPiece[-1] and app.buildStructures != []:
+                                        app.buildStructures.pop()
+                                        app.lastPiece.pop()
                 elif app.buildLevel == False:
                         if event.key == 'h':
                                 default3(app)
+                                other.gameNotActive(app)
                         elif event.key == 'p':
                                 default4(app)
                                 app.gameMode = 'pre'
@@ -110,6 +125,7 @@ def gameNav(app, event, delivery):
                                 default4(app)
                                 app.openFilename = app.getUserInput('what filename would you like to open (must be exact, also include .csv)')
                                 app.gameMode = 'user'
+                                app.startGame = True
                         elif event.key == 'i':
                                 app.gameInstruct = True
                         elif event.key == 't':

@@ -589,8 +589,8 @@ class App(object):
             app._deferredMethodCall(afterId='mouseMotionWrapper', afterDelay=app.mouseMovedDelay, afterFn=app._mouseMotionWrapper)
 
     def updateTitle(app):
-        app._title = app._title or type(app).__name__
-        app._root.title(f'{app._title} ({app.width} x {app.height})')
+        app._title = 'furious fowl' or type(app).__name__
+        app._root.title(app._title)
 
     def getQuitMessage(app):
         appLabel = type(app).__name__
